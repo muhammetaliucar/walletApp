@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React from "react";
 
 interface Props {
@@ -9,9 +15,12 @@ interface Props {
 const FloatButton = ({ setModalVisible, textRef }: Props) => {
   const handlePress = () => {
     setModalVisible(true);
+
     setTimeout(() => {
+      textRef.current.blur();
+
       textRef.current.focus();
-    }, 100);
+    }, 500);
   };
 
   return (
@@ -30,11 +39,11 @@ const styles = StyleSheet.create({
     width: 60,
     borderRadius: 60,
     marginTop: 20,
-    zIndex:1,
+    zIndex: 1,
     justifyContent: "center",
     position: "absolute",
-    bottom: 40,
-    right: 30,
+    bottom: 10,
+    right: 20,
     alignItems: "center",
   },
 });

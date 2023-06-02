@@ -10,6 +10,19 @@
     "noEmit": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "isolatedModules": true
-  }
+    "isolatedModules": true,
+    "baseUrl": "./",
+    "paths": {
+      "@components/*": ["./components/*"]
+    }
+  },
+  "include": [
+    "./custom.d.ts",
+    "**/*.js",
+    "**/*.ts",
+    "**/*.jsx",
+    "**/*.tsx",
+    "**/*.svg",
+    "**/*.json"
+  ]
 }

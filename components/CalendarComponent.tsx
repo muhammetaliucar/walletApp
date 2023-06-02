@@ -1,7 +1,6 @@
 import { Dimensions, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { Calendar } from "react-native-calendars";
-
 interface Props {
   selected: string;
   setSelected: React.Dispatch<React.SetStateAction<string>>;
@@ -15,14 +14,17 @@ const CalendarComponent = ({ selected, setSelected }: Props) => {
       onVisibleMonthsChange={(months) => {
         console.log("now these months are visible", months);
       }}
-      style={{ width: Dimensions.get("window").width, height: Dimensions.get("window").height*0.4 }}
+      style={{
+        width: Dimensions.get("window").width,
+        height: Dimensions.get("window").height * 0.4,
+      }}
       onDayPress={(day) => {
         setSelected(day.dateString);
       }}
       markedDates={{
         [selected]: {
           selected: true,
-          disableTouchEvent: true,
+          disableTouchEvent: false,
         },
       }}
     />
@@ -30,5 +32,3 @@ const CalendarComponent = ({ selected, setSelected }: Props) => {
 };
 
 export default CalendarComponent;
-
-const styles = StyleSheet.create({});

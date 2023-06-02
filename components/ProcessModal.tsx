@@ -9,19 +9,18 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import ReactNativeModal from "react-native-modal";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import HeaderItem from "./HeaderItem";
 import Header from "./Header";
+import { monthGenerator } from "../utils/monthGenerator";
+import UserContext from "../contexts/UserContext";
 
 interface Props {
   modalVisible: boolean;
   setModalVisible: (value: boolean) => void;
   textRef: any;
   selected: string;
-  dateData: any;
-  setDateData: (value: any) => void;
 }
 
 const ProcessModal = ({
@@ -29,20 +28,23 @@ const ProcessModal = ({
   setModalVisible,
   textRef,
   selected,
-  dateData,
-  setDateData,
 }: Props) => {
   const [total, setTotal] = useState<number>(0);
   const [modalHeaderSelected, setModalHeaderSelected] =
     useState<string>("Revenue");
+  let uniq = "id" + new Date().getTime();
+
+  const { data: dateData, setData: setDateData } = useContext(UserContext);
 
   const handleBackDropPress = () => {
     Keyboard.dismiss();
     setModalVisible(false);
+    setTotal(0);
   };
 
   return (
     <ReactNativeModal
+      shouldRasterizeIOS={true}
       onBackdropPress={handleBackDropPress}
       style={styles.mainContainer}
       isVisible={modalVisible}
@@ -53,7 +55,7 @@ const ProcessModal = ({
         <View style={styles.container}>
           <Header
             modalHeaderSelected={modalHeaderSelected}
-            setModalHeaderSelected={(e)=>setModalHeaderSelected(e)}
+            setModalHeaderSelected={(e) => setModalHeaderSelected(e)}
           />
 
           <View style={styles.inputText}>
@@ -70,11 +72,9 @@ const ProcessModal = ({
 
             <Text style={{ fontSize: 20 }}>₺</Text>
           </View>
-          <View
-            style={styles.selected}
-          >
+          <View style={styles.selected}>
             <Text>Selected Date:</Text>
-            <Text>{selected}</Text>
+            <Text>{monthGenerator(selected)}</Text>
           </View>
         </View>
         <View style={styles.inputAcces}>
@@ -87,12 +87,13 @@ const ProcessModal = ({
                 type: modalHeaderSelected,
                 total: total,
                 date: selected,
+                id: uniq,
               };
-              console.log(dateData,"dt")
               setDateData(dateData.concat(data));
               AsyncStorage.setItem("data", JSON.stringify([...dateData, data]));
               setModalVisible(false);
               Keyboard.dismiss();
+              setTotal(0);
             }}
           >
             <Text style={{ fontSize: 20, color: "#7675A1" }}>Save</Text>
@@ -132,10 +133,10 @@ const styles = StyleSheet.create({
     margin: 0,
     justifyContent: "flex-end",
   },
-  selected:{
+  selected: {
     width: "100%",
     flexDirection: "row",
     marginTop: 20,
     justifyContent: "space-between",
-  }
+  },
 });
