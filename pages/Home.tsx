@@ -14,6 +14,7 @@ import FloatButton from "../components/FloatButton";
 import CalendarComponent from "../components/CalendarComponent";
 import Card from "../components/Card";
 import UserContext from "../contexts/UserContext";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 export default function Home() {
   const [modalVisible, setModalVisible] = useState(false);

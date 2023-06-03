@@ -89,7 +89,10 @@ const Stats = () => {
   const handleRevenue = () => {
     let revenue = 0;
     userData
-      .filter((i) => i.type === "Revenue")
+      .filter(
+        (i: { type: string; date: string; total: number }) =>
+          i.type === "Revenue"
+      )
       .map((i) => {
         if (i.date.split("-")[0] == year) {
           revenue += i.total;

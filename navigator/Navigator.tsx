@@ -6,6 +6,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Stats from "../pages/Stats";
 import UserContext from "../contexts/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
+import Settings from "../pages/Settings";
+import { Feather } from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -41,8 +45,33 @@ export default function Navigator() {
           },
         }}
       >
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Stats" component={Stats} />
+        <Tab.Screen
+          name="Home"
+          options={{
+            tabBarIcon: ({ color }) => (
+              <MaterialCommunityIcons name="home" color={color} size={26} />
+            ),
+          }}
+          component={Home}
+        />
+        <Tab.Screen
+          name="Stats"
+          options={{
+            tabBarIcon: ({ color }) => (
+              <Ionicons name="stats-chart" size={26} color={color} />
+            ),
+          }}
+          component={Stats}
+        />
+        <Tab.Screen
+          name="Settings"
+          options={{
+            tabBarIcon: ({ color }) => (
+              <Feather name="settings" size={26} color={color} />
+            ),
+          }}
+          component={Settings}
+        />
       </Tab.Navigator>
     );
   };
