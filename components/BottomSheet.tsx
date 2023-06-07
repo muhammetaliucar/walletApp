@@ -1,17 +1,5 @@
-import {
-  StyleSheet,
-  View,
-  Keyboard,
-  Pressable,
-  Dimensions,
-} from "react-native";
-import React, {
-  useCallback,
-  useImperativeHandle,
-  forwardRef,
-  useState,
-  ReactNode,
-} from "react";
+import { Dimensions, StyleSheet, Text, View } from "react-native";
+import React, { useCallback, useEffect, useImperativeHandle } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Extrapolate,
@@ -19,127 +7,84 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
+  withTiming,
 } from "react-native-reanimated";
-import { Portal } from "@gorhom/portal";
 
-const MAX_TRANSLATE_Y = -Dimensions.get("window").height;
-const SCREEN_HEIGHT = Dimensions.get("window").height;
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-interface Props {
-  children: ReactNode;
-  top: number;
-}
+const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
 
-const BottomSheet = forwardRef(({ children, top = 100 }: Props, ref) => {
-  const translateY = useSharedValue(0);
-  const active = useSharedValue(false);
-  const [showPortal, setShowPortal] = useState<boolean>(false);
+type BottomSheetProps = {
+  children?: React.ReactNode;
+};
 
-  const scrollTo = useCallback((destination: number) => {
-    "worklet";
-    active.value = destination !== 0;
+export type BottomSheetRefProps = {
+  scrollTo: (destination: number) => void;
+  isActive: () => boolean;
+};
 
-    if (destination === 0) {
-      setTimeout(() => {
-        setShowPortal(false);
-      }, 300); //for animation
-      Keyboard.dismiss(); //for keyboard
-    } else {
-      setShowPortal(true);
-    }
+const BottomSheet = React.forwardRef<BottomSheetRefProps, BottomSheetProps>(
+  ({ children }, ref) => {
+    const translateY = useSharedValue(0);
+    const active = useSharedValue(false);
 
-    translateY.value = withSpring(destination, { damping: 50 });
-  }, []);
+    const scrollTo = useCallback((destination: number) => {
+      "worklet";
+      active.value = destination !== 0;
 
-  const isActive = useCallback(() => {
-    return active.value;
-  }, []);
+      translateY.value = withSpring(destination, { damping: 50 });
+    }, []);
 
-  useImperativeHandle(ref, () => ({ scrollTo, isActive }), [
-    scrollTo,
-    isActive,
-  ]);
+    const isActive = useCallback(() => {
+      return active.value;
+    }, []);
 
-  const context = useSharedValue({ y: 0 });
+    useImperativeHandle(ref, () => ({ scrollTo, isActive }), [
+      scrollTo,
+      isActive,
+    ]);
 
-  const gesture = Gesture.Pan()
-    .runOnJS(true) // because gesture is causing problems.
-    .onStart(() => {
-      context.value = { y: translateY.value };
-    })
-    .onUpdate((event) => {
-      translateY.value = translateY.value = Math.max(
-        event.translationY + context.value.y,
-        MAX_TRANSLATE_Y
-      ); // ilk update attığında konumlandırdığı yer.
-    })
-    .onEnd(() => {
-      if (translateY.value > -SCREEN_HEIGHT / 1.5) {
-        //If you scroll the percentage of the screen, it will go down.
+    const context = useSharedValue({ y: 0 });
+    const gesture = Gesture.Pan()
+      .onStart(() => {
+        context.value = { y: translateY.value };
+      })
+      .onUpdate((event) => {
+        translateY.value = event.translationY + context.value.y;
+        translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
+      })
+      .onEnd(() => {
+        if (translateY.value > -SCREEN_HEIGHT / 3) {
+          scrollTo(0);
+        } else if (translateY.value < -SCREEN_HEIGHT / 1.5) {
+          scrollTo(MAX_TRANSLATE_Y);
+        }
+      });
 
-        scrollTo(0);
-      } else if (translateY.value < -SCREEN_HEIGHT / 2.9) {
-        scrollTo(MAX_TRANSLATE_Y);
-      }
+    const rBottomSheetStyle = useAnimatedStyle(() => {
+      const borderRadius = interpolate(
+        translateY.value,
+        [MAX_TRANSLATE_Y + 50, MAX_TRANSLATE_Y],
+        [25, 5],
+        Extrapolate.CLAMP
+      );
+
+      return {
+        borderRadius,
+        transform: [{ translateY: translateY.value }],
+      };
     });
 
-  const rBottomSheetStyle = useAnimatedStyle(() => {
-    const borderRadius = interpolate(
-      translateY.value,
-      [MAX_TRANSLATE_Y + 50, MAX_TRANSLATE_Y],
-      [25, 5],
-      Extrapolate.CLAMP
+    return (
+      <GestureDetector gesture={gesture}>
+        <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]}>
+          <View style={styles.line} />
+          {children}
+        </Animated.View>
+      </GestureDetector>
     );
-
-    return {
-      borderRadius,
-      transform: [{ translateY: translateY.value }],
-    };
-  });
-
-  return (
-    <>
-      {showPortal && (
-        // to make the background black
-        <Portal>
-          <Pressable
-            onPress={() => scrollTo(0)}
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "absolute",
-              top: 0,
-              zIndex: 1,
-              left: 0,
-              backgroundColor: "black",
-              opacity: 0.6,
-            }}
-          />
-          <View
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "absolute",
-              top,
-              zIndex: 2,
-              left: 0,
-              bottom: 150,
-            }}
-          >
-            <GestureDetector gesture={gesture}>
-              <Animated.View
-                style={[styles.bottomSheetContainer, rBottomSheetStyle]}
-              >
-                <View style={styles.line} />
-                {children}
-              </Animated.View>
-            </GestureDetector>
-          </View>
-        </Portal>
-      )}
-    </>
-  );
-});
+  }
+);
 
 const styles = StyleSheet.create({
   bottomSheetContainer: {
@@ -149,16 +94,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: SCREEN_HEIGHT,
     borderRadius: 25,
-    borderTopRightRadius: 15,
-    borderTopLeftRadius: 15,
   },
   line: {
     width: 75,
     height: 4,
-    backgroundColor: "white",
+    backgroundColor: "grey",
     alignSelf: "center",
-    marginTop: 15,
-    borderRadius: 100,
+    marginVertical: 15,
+    borderRadius: 2,
   },
 });
 

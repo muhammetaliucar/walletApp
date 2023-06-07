@@ -11,6 +11,10 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../contexts/UserContext";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { monthGenerator } from "../utils/monthGenerator";
+import { AntDesign } from "@expo/vector-icons";
+import { PRIMARY_COLOR, RED } from "../styles";
 
 interface Props {
   item: any;
@@ -18,6 +22,8 @@ interface Props {
 }
 
 const Card = ({ item, animatedValue }: Props) => {
+  const date = monthGenerator(item.date);
+
   const { data, setData } = useContext(UserContext);
   const leftSwipe = (progress, dragX) => {
     const scale = dragX.interpolate({
@@ -85,29 +91,72 @@ const Card = ({ item, animatedValue }: Props) => {
             justifyContent: "space-between",
             padding: 10,
             marginVertical: 10,
-            borderRadius: 10,
             borderColor: "gray",
-            backgroundColor: item.type === "Revenue" ? "#00bbf2" : "#F5B7B1",
+            backgroundColor: "white",
             elevation: 5,
-            height: 60,
+            height: 70,
             alignItems: "center",
-            shadowColor: "gray",
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.5,
-            shadowRadius: 5,
-            width: Dimensions.get("window").width * 0.9,
+            width: Dimensions.get("window").width,
           }}
         >
-          <Text style={{ fontSize: 20, color: "white" }}>{item.type}</Text>
+          <View style={{ flexDirection: "row", alignItems: "center" }}>
+            <View
+              style={{
+                padding: 10,
+                borderRadius: 6,
+                justifyContent: "center",
+              }}
+            >
+              {item.type === "Revenue" ? (
+                <AntDesign name="smileo" size={30} color={PRIMARY_COLOR} />
+              ) : (
+                <AntDesign name="frowno" size={30} color={RED} />
+              )}
+            </View>
+            <View style={{ marginStart: 5 }}>
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: item.type === "Revenue" ? PRIMARY_COLOR : RED,
+                  marginBottom: 5,
+                }}
+              >
+                {item.type}
+              </Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: item.type === "Revenue" ? PRIMARY_COLOR : RED,
+                }}
+              >
+                Description
+              </Text>
+            </View>
+          </View>
           <View
             style={{
-              flexDirection: "row",
               justifyContent: "center",
               alignItems: "center",
             }}
           >
-            <Text style={{ fontSize: 20, color: "white" }}>{item.total}</Text>
-            <Text style={{ fontSize: 20, color: "white" }}> ₺</Text>
+            <Text
+              style={{
+                fontSize: 20,
+                color: item.type === "Revenue" ? PRIMARY_COLOR : RED,
+                marginBottom: 5,
+                fontWeight: "bold",
+              }}
+            >
+              ₺{item.total}
+            </Text>
+            <Text
+              style={{
+                fontSize: 12,
+                color: item.type === "Revenue" ? PRIMARY_COLOR : RED,
+              }}
+            >
+              {date}
+            </Text>
           </View>
         </TouchableOpacity>
       </Swipeable>
@@ -123,19 +172,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     width: 100,
-    height: 60,
+    height: 70,
     marginTop: 10,
-    borderRadius: 10,
-    marginRight: 10,
+    // borderRadius: 10,
   },
   editBox: {
-    backgroundColor: "green",
+    backgroundColor: "#06d6a0",
     justifyContent: "center",
     alignItems: "center",
     width: 100,
-    height: 60,
-    marginLeft: 10,
+    height: 70,
     marginTop: 10,
-    borderRadius: 10,
+    // borderRadius: 10,
   },
 });

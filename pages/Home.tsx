@@ -1,47 +1,48 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import {
   Dimensions,
-  FlatList,
   SafeAreaView,
   StyleSheet,
   View,
   Animated,
+  Text,
+  ScrollView,
 } from "react-native";
-import Header from "../components/HeaderItem";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import ProcessModal from "../components/ProcessModal";
 import FloatButton from "../components/FloatButton";
 import CalendarComponent from "../components/CalendarComponent";
 import Card from "../components/Card";
 import UserContext from "../contexts/UserContext";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import { AntDesign } from "@expo/vector-icons";
 
 export default function Home() {
+  const { data } = useContext(UserContext);
+
   const [modalVisible, setModalVisible] = useState(false);
   const textRef = useRef(null);
-  const [monthVisible, setMonthVisible] = useState(new Date().getMonth());
+  const [monthVisible, setMonthVisible] = useState(
+    new Date().getMonth().toString().length === 1
+      ? `0${new Date().getMonth()}`
+      : new Date().getMonth()
+  );
+  console.log(typeof monthVisible, "monthVisible");
   const [selected, setSelected] = useState(
     new Date().toISOString().slice(0, 10)
   );
-  const [headerSelected, setHeaderSelected] = useState("Revenue");
   const [dateData, setDateDate] = useState<any>([]);
 
-  const { data, setData } = useContext(UserContext);
-
-  const fetchData = async () => {
-    const data = await AsyncStorage.getItem("data");
-    if (data) {
-      const parsedData = JSON.parse(data);
-      setDateDate(parsedData);
-    }
-  };
-  const filteredData = data.filter((item) => {
-    return item.date === selected && item.type === headerSelected;
-  });
-
-  useEffect(() => {
-    fetchData();
-  }, []);
+  const filteredData = data
+    .sort((a, b) => {
+      return b.createdAt - a.createdAt;
+    })
+    .filter((item) => item.date.split("-")[1] === monthVisible)
+    .slice(0, 3);
 
   useEffect(() => {
     if (filteredData.length === 0) {
@@ -73,69 +74,141 @@ export default function Home() {
     };
   }, []);
 
+  console.log(monthVisible, "monthVisible");
+
+  useEffect(() => {
+    handleProcess();
+  }, [monthVisible]);
+
+  const handleProcess = () => {
+    const revenue = data
+      .filter(
+        (item) =>
+          item.type === "Revenue" && item.date.split("-")[1] === monthVisible
+      )
+      .reduce((acc, item) => {
+        return acc + item.total;
+      }, 0);
+    const expense = data
+      .filter(
+        (item) =>
+          item.type === "Expense" && item.date.split("-")[1] === monthVisible
+      )
+      .reduce((acc, item) => acc + item.total, 0);
+    const balance = revenue - expense;
+    return { revenue, expense, balance };
+  };
+
   return (
     <>
-      <SafeAreaView style={styles.container}>
-        <CalendarComponent
-          selected={selected}
-          setSelected={setSelected}
-          selectedMonth={monthVisible}
-          setSelectedMonth={setMonthVisible}
-        />
-        <View
-          style={{
-            marginTop: 20,
-            flexDirection: "row",
-            justifyContent: "space-around",
-            width: Dimensions.get("window").width,
-            padding: 10,
-          }}
-        >
-          <Header
-            value={headerSelected}
-            setValue={setHeaderSelected}
-            name={"Revenue"}
+      <ScrollView
+        style={{
+          backgroundColor: "#fff",
+        }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingBottom: filteredData.length === 0 ? 0 : 80,
+          backgroundColor: "#fff",
+        }}
+      >
+        <SafeAreaView style={styles.container}>
+          <CalendarComponent
+            selected={selected}
+            setSelected={setSelected}
+            selectedMonth={monthVisible}
+            setSelectedMonth={setMonthVisible}
           />
-          <Header
-            value={headerSelected}
-            setValue={setHeaderSelected}
-            name={"Balance"}
-          />
-          <Header
-            value={headerSelected}
-            setValue={(e) => setHeaderSelected(e)}
-            name={"Expense"}
-          />
-        </View>
-        <FloatButton setModalVisible={setModalVisible} textRef={textRef} />
-        <FlatList
-          contentContainerStyle={{
-            paddingBottom: 70,
-            width: Dimensions.get("window").width,
-            alignItems: "center",
-          }}
-          data={filteredData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <Card item={item} animatedValue={animatedValue} />
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              color: "#4a4a4a",
+              marginVertical: 20,
+            }}
+          >
+            ₺{handleProcess().balance.toFixed(2)}
+          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginTop: 14,
+              alignSelf: "flex-start",
+              marginStart: 20,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 14,
+                fontWeight: "300",
+                color: "#4a4a4a",
+                marginEnd: 10,
+              }}
+            >
+              RECENT TRANSACTIONS
+            </Text>
+            <AntDesign name="arrowright" size={16} color="black" />
+          </View>
+          {filteredData.length === 0 ? (
+            <View
+              style={{
+                marginTop: 20,
+                width: Dimensions.get("window").width,
+                alignItems: "center",
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 16,
+                  color: "#4a4a4a",
+                }}
+              >
+                No transactions found
+              </Text>
+            </View>
+          ) : (
+            filteredData.map((item, index) => {
+              return (
+                <Animated.View
+                  key={index}
+                  style={{
+                    opacity: animatedValue,
+                    transform: [
+                      {
+                        translateY: animatedValue.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [50, 0],
+                        }),
+                      },
+                    ],
+                  }}
+                >
+                  <Card
+                    item={item}
+                    dateData={dateData}
+                    setDateDate={setDateDate}
+                  />
+                </Animated.View>
+              );
+            })
           )}
+        </SafeAreaView>
+        <ProcessModal
+          setDateData={setDateDate}
+          selected={selected}
+          dateData={dateData}
+          modalVisible={modalVisible}
+          setModalVisible={setModalVisible}
+          textRef={textRef}
         />
-      </SafeAreaView>
-      <ProcessModal
-        setDateData={setDateDate}
-        selected={selected}
-        dateData={dateData}
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        textRef={textRef}
-      />
+      </ScrollView>
+      <FloatButton setModalVisible={setModalVisible} textRef={textRef} />
     </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: "#fff",
     alignItems: "center",
   },

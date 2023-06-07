@@ -116,7 +116,7 @@ const Stats = () => {
     legend: ["Revenue"],
   };
   return (
-    <View style={{ flex: 1, backgroundColor: "#4a4a4a" }}>
+    <View style={{ flex: 1, backgroundColor: "#4a4a4a", width: "100%" }}>
       <LineChart
         data={data}
         width={screenWidth}

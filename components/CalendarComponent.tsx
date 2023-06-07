@@ -1,6 +1,8 @@
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions } from "react-native";
 import React, { useContext } from "react";
 import { Calendar } from "react-native-calendars";
+import { useNavigation } from "@react-navigation/native";
+import { PRIMARY_COLOR, WHITE } from "../styles";
 interface Props {
   selected: string;
   setSelected: React.Dispatch<React.SetStateAction<string>>;
@@ -8,23 +10,36 @@ interface Props {
   setSelectedMonth: React.Dispatch<React.SetStateAction<number>>;
 }
 
-const CalendarComponent = ({ selected, setSelected }: Props) => {
+const CalendarComponent = ({
+  selected,
+  setSelected,
+  setSelectedMonth,
+  selectedMonth,
+}: Props) => {
+  const navigation = useNavigation();
+
+  const handleMonthChange = (month: any) => {
+    setSelectedMonth(month[0].dateString.split("-")[1]);
+  };
   return (
     <Calendar
-      onVisibleMonthsChange={(months) => {
-        console.log("now these months are visible", months);
-      }}
+      onVisibleMonthsChange={handleMonthChange}
       style={{
         width: Dimensions.get("window").width,
-        height: Dimensions.get("window").height * 0.4,
+        marginBottom: 20,
       }}
       onDayPress={(day) => {
         setSelected(day.dateString);
+        navigation.navigate("Details", {
+          date: day.dateString,
+        });
       }}
       markedDates={{
         [selected]: {
           selected: true,
-          disableTouchEvent: false,
+          disableTouchEvent: true,
+          selectedColor: PRIMARY_COLOR,
+          selectedTextColor: WHITE,
         },
       }}
     />

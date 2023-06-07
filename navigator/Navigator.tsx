@@ -10,6 +10,8 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
 import Settings from "../pages/Settings";
 import { Feather } from "@expo/vector-icons";
+import "react-native-gesture-handler";
+import Details from "../pages/Details";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -81,6 +83,7 @@ export default function Navigator() {
       <Stack.Navigator
         screenOptions={{
           headerTitleAlign: "center",
+          headerBackTitleVisible: false,
           headerTitle: "Expense Tracker",
           headerStyle: {
             backgroundColor: "#00bbf2",
@@ -92,6 +95,18 @@ export default function Navigator() {
         }}
       >
         <Stack.Screen name="BottomTab" component={BottomTab} />
+        <Stack.Screen
+          options={{
+            headerBackTitleVisible: false,
+            headerTitle: "Details",
+            headerTintColor: "white",
+            headerStyle: {
+              backgroundColor: "#00bbf2",
+            },
+          }}
+          name="Details"
+          component={Details}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

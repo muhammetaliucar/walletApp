@@ -18,7 +18,6 @@ const FloatButton = ({ setModalVisible, textRef }: Props) => {
 
     setTimeout(() => {
       textRef.current.blur();
-
       textRef.current.focus();
     }, 500);
   };

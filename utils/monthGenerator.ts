@@ -1,5 +1,7 @@
 export const monthGenerator = (date: string) => {
   const month = parseInt(date.split("-")[1]);
+  const year = parseInt(date.split("-")[0]);
+  const day = parseInt(date.split("-")[2]);
   switch (month) {
     case 1:
       return "January";
@@ -12,7 +14,7 @@ export const monthGenerator = (date: string) => {
     case 5:
       return "May";
     case 6:
-      return "June";
+      return `${day} June ${year} `;
     case 7:
       return "July";
     case 8:

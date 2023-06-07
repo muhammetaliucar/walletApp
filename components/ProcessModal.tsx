@@ -88,6 +88,7 @@ const ProcessModal = ({
                 total: total,
                 date: selected,
                 id: uniq,
+                createdAt: Date.now(),
               };
               setDateData(dateData.concat(data));
               AsyncStorage.setItem("data", JSON.stringify([...dateData, data]));
