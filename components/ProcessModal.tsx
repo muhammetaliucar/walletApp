@@ -32,7 +32,6 @@ const ProcessModal = ({
   const [total, setTotal] = useState<number>(0);
   const [modalHeaderSelected, setModalHeaderSelected] =
     useState<string>("Revenue");
-  let uniq = "id" + new Date().getTime();
 
   const { data: dateData, setData: setDateData } = useContext(UserContext);
 
@@ -44,7 +43,6 @@ const ProcessModal = ({
 
   return (
     <ReactNativeModal
-      shouldRasterizeIOS={true}
       onBackdropPress={handleBackDropPress}
       style={styles.mainContainer}
       isVisible={modalVisible}
@@ -78,7 +76,12 @@ const ProcessModal = ({
           </View>
         </View>
         <View style={styles.inputAcces}>
-          <TouchableOpacity>
+          <TouchableOpacity
+            onPress={() => {
+              Keyboard.dismiss();
+              setModalVisible(false);
+            }}
+          >
             <Text style={{ fontSize: 20 }}>Cancel</Text>
           </TouchableOpacity>
           <TouchableOpacity
@@ -86,8 +89,9 @@ const ProcessModal = ({
               let data = {
                 type: modalHeaderSelected,
                 total: total,
+                description: "",
                 date: selected,
-                id: uniq,
+                id: Date.now(),
                 createdAt: Date.now(),
               };
               setDateData(dateData.concat(data));
@@ -125,9 +129,9 @@ const styles = StyleSheet.create({
   inputText: {
     flexDirection: "row",
     borderRadius: 8,
+    padding: 20,
     borderWidth: 1,
     borderColor: "#7675A1",
-    padding: 20,
     marginTop: 20,
   },
   mainContainer: {

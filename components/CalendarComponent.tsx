@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import { Calendar } from "react-native-calendars";
 import { useNavigation } from "@react-navigation/native";
 import { PRIMARY_COLOR, WHITE } from "../styles";
+import UserContext from "../contexts/UserContext";
 interface Props {
   selected: string;
   setSelected: React.Dispatch<React.SetStateAction<string>>;
@@ -18,6 +19,10 @@ const CalendarComponent = ({
 }: Props) => {
   const navigation = useNavigation();
 
+  const { data } = useContext(UserContext);
+
+  const dates = data.map((item) => item.date);
+
   const handleMonthChange = (month: any) => {
     setSelectedMonth(month[0].dateString.split("-")[1]);
   };
@@ -25,9 +30,23 @@ const CalendarComponent = ({
     <Calendar
       onVisibleMonthsChange={handleMonthChange}
       style={{
-        width: Dimensions.get("window").width,
+        borderWidth: 1,
+        width: Dimensions.get("window").width * 0.9,
+        borderRadius: 10,
+        marginTop: 20,
+        borderColor: "#e0e0e0",
+        shadowColor: "#000",
+        shadowOffset: {
+          width: 0,
+          height: 0,
+        },
+        shadowOpacity: 0.1,
+        shadowRadius: 10,
+        elevation: 5,
+
         marginBottom: 20,
       }}
+      firstDay={1}
       onDayPress={(day) => {
         setSelected(day.dateString);
         navigation.navigate("Details", {
@@ -41,6 +60,13 @@ const CalendarComponent = ({
           selectedColor: PRIMARY_COLOR,
           selectedTextColor: WHITE,
         },
+        ...dates.reduce((obj, item) => {
+          obj[item] = {
+            marked: true,
+            dotColor: PRIMARY_COLOR,
+          };
+          return obj;
+        }, {}),
       }}
     />
   );

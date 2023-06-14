@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -15,6 +15,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { monthGenerator } from "../utils/monthGenerator";
 import { AntDesign } from "@expo/vector-icons";
 import { PRIMARY_COLOR, RED } from "../styles";
+import ReactNativeModal from "react-native-modal";
 
 interface Props {
   item: any;
@@ -23,6 +24,7 @@ interface Props {
 
 const Card = ({ item, animatedValue }: Props) => {
   const date = monthGenerator(item.date);
+  const [modalVisible, setModalVisible] = useState(false);
 
   const { data, setData } = useContext(UserContext);
   const leftSwipe = (progress, dragX) => {
@@ -85,6 +87,7 @@ const Card = ({ item, animatedValue }: Props) => {
     <GestureHandlerRootView>
       <Swipeable renderLeftActions={leftSwipe} renderRightActions={rightSwipe}>
         <TouchableOpacity
+          onLongPress={() => setModalVisible(true)}
           activeOpacity={0.6}
           style={{
             flexDirection: "row",
@@ -93,7 +96,6 @@ const Card = ({ item, animatedValue }: Props) => {
             marginVertical: 10,
             borderColor: "gray",
             backgroundColor: "white",
-            elevation: 5,
             height: 70,
             alignItems: "center",
             width: Dimensions.get("window").width,
@@ -124,12 +126,14 @@ const Card = ({ item, animatedValue }: Props) => {
                 {item.type}
               </Text>
               <Text
+                numberOfLines={1}
                 style={{
                   fontSize: 12,
+                  width: 150,
                   color: item.type === "Revenue" ? PRIMARY_COLOR : RED,
                 }}
               >
-                Description
+                {item.description ? item.description : "No Description"}
               </Text>
             </View>
           </View>
@@ -160,6 +164,114 @@ const Card = ({ item, animatedValue }: Props) => {
           </View>
         </TouchableOpacity>
       </Swipeable>
+      {modalVisible && (
+        <ReactNativeModal
+          isVisible
+          onBackdropPress={() => {
+            setModalVisible(false);
+          }}
+          onBackButtonPress={() => {
+            setModalVisible(false);
+          }}
+          style={{ justifyContent: "center", alignItems: "center" }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              borderRadius: 6,
+              height: "50%",
+              paddingHorizontal: 20,
+
+              width: "80%",
+            }}
+          >
+            <View
+              style={{
+                borderBottomWidth: 1,
+                borderColor: "#4a4a",
+                paddingBottom: 20,
+              }}
+            >
+              <Text
+                style={{
+                  fontStyle: "italic",
+                  color: "black",
+                  textAlign: "center",
+                  fontWeight: "500",
+                  fontSize: 20,
+                  marginTop: 20,
+                }}
+              >
+                {item.type}
+              </Text>
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: 20,
+                  color: "gray",
+                }}
+              >
+                {monthGenerator(item.date)}
+              </Text>
+            </View>
+            <View
+              style={{
+                borderBottomWidth: 1,
+                paddingBottom: 20,
+                borderColor: "#4a4a",
+              }}
+            >
+              <Text
+                style={{
+                  textAlign: "center",
+                  marginTop: 20,
+                  color: "gray",
+                  fontStyle: "italic",
+                }}
+              >
+                Note:
+              </Text>
+              <Text
+                numberOfLines={5}
+                style={{
+                  textAlign: "center",
+                  marginTop: 10,
+                  color: "gray",
+                }}
+              >
+                {item.description ? item.description : "No Description"}
+              </Text>
+            </View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginTop: 20,
+              }}
+            >
+              <Text
+                style={{
+                  color: "black",
+                  fontSize: 20,
+                  fontWeight: "bold",
+                }}
+              >
+                Total:
+              </Text>
+              <Text
+                style={{
+                  color: item.type === "Revenue" ? PRIMARY_COLOR : RED,
+                  fontSize: 20,
+                  fontWeight: "bold",
+                }}
+              >
+                {item.total}₺
+              </Text>
+            </View>
+          </View>
+        </ReactNativeModal>
+      )}
     </GestureHandlerRootView>
   );
 };

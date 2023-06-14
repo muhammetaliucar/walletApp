@@ -24,29 +24,30 @@ import { AntDesign } from "@expo/vector-icons";
 export default function Home() {
   const { data } = useContext(UserContext);
 
+  console.log(data, "data");
+
   const [modalVisible, setModalVisible] = useState(false);
   const textRef = useRef(null);
   const [monthVisible, setMonthVisible] = useState(
-    new Date().getMonth().toString().length === 1
-      ? `0${new Date().getMonth()}`
-      : new Date().getMonth()
+    (new Date().getMonth() + 1).toString().padStart(2, "0")
   );
-  console.log(typeof monthVisible, "monthVisible");
   const [selected, setSelected] = useState(
     new Date().toISOString().slice(0, 10)
   );
-  const [dateData, setDateDate] = useState<any>([]);
+  const [dateData, setDateData] = useState([]);
 
-  const filteredData = data
-    .sort((a, b) => {
-      return b.createdAt - a.createdAt;
-    })
-    .filter((item) => item.date.split("-")[1] === monthVisible)
-    .slice(0, 3);
+  const filteredData = useCallback(
+    () =>
+      data
+        .sort((a, b) => b.createdAt - a.createdAt)
+        .filter((item) => item.date.split("-")[1] === monthVisible)
+        .slice(0, 3),
+    [data, monthVisible]
+  );
 
   useEffect(() => {
-    if (filteredData.length === 0) {
-      setDateDate((prev) => [
+    if (filteredData().length === 0) {
+      setDateData((prev) => [
         ...prev,
         {
           date: selected,
@@ -56,7 +57,7 @@ export default function Home() {
         },
       ]);
     }
-  }, [selected]);
+  }, [selected, filteredData]);
 
   const animatedValue = useRef(new Animated.Value(0)).current;
 
@@ -74,13 +75,11 @@ export default function Home() {
     };
   }, []);
 
-  console.log(monthVisible, "monthVisible");
-
   useEffect(() => {
     handleProcess();
   }, [monthVisible]);
 
-  const handleProcess = () => {
+  const handleProcess = useCallback(() => {
     const revenue = data
       .filter(
         (item) =>
@@ -97,7 +96,7 @@ export default function Home() {
       .reduce((acc, item) => acc + item.total, 0);
     const balance = revenue - expense;
     return { revenue, expense, balance };
-  };
+  }, [data, monthVisible]);
 
   return (
     <>
@@ -107,7 +106,7 @@ export default function Home() {
         }}
         contentContainerStyle={{
           flexGrow: 1,
-          paddingBottom: filteredData.length === 0 ? 0 : 80,
+          paddingBottom: filteredData().length === 0 ? 0 : 80,
           backgroundColor: "#fff",
         }}
       >
@@ -149,7 +148,7 @@ export default function Home() {
             </Text>
             <AntDesign name="arrowright" size={16} color="black" />
           </View>
-          {filteredData.length === 0 ? (
+          {filteredData().length === 0 ? (
             <View
               style={{
                 marginTop: 20,
@@ -167,7 +166,7 @@ export default function Home() {
               </Text>
             </View>
           ) : (
-            filteredData.map((item, index) => {
+            filteredData().map((item, index) => {
               return (
                 <Animated.View
                   key={index}
@@ -186,7 +185,7 @@ export default function Home() {
                   <Card
                     item={item}
                     dateData={dateData}
-                    setDateDate={setDateDate}
+                    setDateData={setDateData}
                   />
                 </Animated.View>
               );
@@ -194,7 +193,7 @@ export default function Home() {
           )}
         </SafeAreaView>
         <ProcessModal
-          setDateData={setDateDate}
+          setDateData={setDateData}
           selected={selected}
           dateData={dateData}
           modalVisible={modalVisible}
@@ -202,7 +201,11 @@ export default function Home() {
           textRef={textRef}
         />
       </ScrollView>
-      <FloatButton setModalVisible={setModalVisible} textRef={textRef} />
+      <FloatButton
+        setModalVisible={setModalVisible}
+        textRef={textRef}
+        data={selected}
+      />
     </>
   );
 }

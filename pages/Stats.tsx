@@ -1,16 +1,19 @@
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect } from "react";
 import { LineChart, ProgressChart } from "react-native-chart-kit";
 import UserContext from "../contexts/UserContext";
+import { BarChart, PieChart } from "react-native-gifted-charts";
+import { PRIMARY_COLOR } from "../styles";
+import { FontAwesome5 } from "@expo/vector-icons";
 
 const screenWidth = Dimensions.get("window").width;
 
 const chartConfig = {
-  backgroundGradientFrom: "#1E2923",
+  backgroundGradientFrom: "#fff",
   backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: "#08130D",
+  backgroundGradientTo: "#fff",
   backgroundGradientToOpacity: 0.5,
-  color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White color
   strokeWidth: 2, // optional, default 3
   barPercentage: 0.5,
   useShadowColorFromDataset: false, // optional
@@ -32,7 +35,6 @@ const months = [
 ];
 
 const monthsNumber = new Date().getMonth();
-const year = new Date().getFullYear();
 
 const Stats = () => {
   const { data: userData } = useContext(UserContext);
@@ -82,27 +84,38 @@ const Stats = () => {
 
       totalsByMonth[key] = totalsByType;
     }
-
-    console.log(totalsByMonth);
   };
 
   const handleRevenue = () => {
-    let revenue = 0;
-    userData
-      .filter(
-        (i: { type: string; date: string; total: number }) =>
-          i.type === "Revenue"
-      )
-      .map((i) => {
-        if (i.date.split("-")[0] == year) {
-          revenue += i.total;
-        }
-      });
-    return revenue;
+    let revenue = [];
+    let revenueData = [];
+    let total = 0;
+
+    for (let i = 0; i < monthsNumber + 1; i++) {
+      const rev = userData
+        .filter(
+          (item) =>
+            item.date.split("-")[1] === (i + 1).toString().padStart(2, "0")
+        )
+        .reduce((acc, item) => acc + item.total, 0);
+
+      const data = {
+        value: rev / 1000,
+        label: months[i].slice(0, 3),
+        frontColor: "white",
+      };
+      total += rev;
+
+      const month = rev / 1000;
+      revenue.push(data);
+      revenueData.push(month);
+    }
+
+    return { revenue, revenueData, total };
   };
 
   useEffect(() => {
-    setChartData(handleRevenue());
+    setChartData(handleRevenue().revenue);
     handleData();
   }, [userData]);
 
@@ -110,20 +123,200 @@ const Stats = () => {
     labels: months.slice(0, monthsNumber + 1),
     datasets: [
       {
-        data: [chartData],
+        data: handleRevenue().revenueData,
       },
     ],
     legend: ["Revenue"],
   };
+
   return (
-    <View style={{ flex: 1, backgroundColor: "#4a4a4a", width: "100%" }}>
-      <LineChart
-        data={data}
-        width={screenWidth}
-        height={220}
-        chartConfig={chartConfig}
-      />
-    </View>
+    <ScrollView
+      style={{
+        backgroundColor: "white",
+      }}
+    >
+      <View>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            marginLeft: 20,
+            marginTop: 20,
+          }}
+        >
+          {months[0].slice(0, 3)} - {months[monthsNumber].slice(0, 3)}{" "}
+          {new Date().getFullYear()}
+        </Text>
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-around",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "#ff981d",
+            borderRadius: 6,
+            marginVertical: 30,
+            paddingHorizontal: 10,
+            width: "45%",
+            paddingVertical: 10,
+          }}
+        >
+          <Text
+            style={{
+              color: "white",
+              fontSize: 20,
+              fontWeight: "bold",
+              marginLeft: 10,
+            }}
+          >
+            Revenue
+          </Text>
+          <FontAwesome5
+            name="money-bill-wave"
+            size={24}
+            color="white"
+            style={{
+              marginLeft: 10,
+            }}
+          />
+          <Text
+            style={{
+              color: "white",
+              fontSize: 20,
+              fontWeight: "bold",
+              marginLeft: 10,
+              marginTop: 20,
+            }}
+          >
+            ₺{handleRevenue().total}{" "}
+          </Text>
+        </View>
+        <View
+          style={{
+            backgroundColor: "#ff981d",
+            borderRadius: 6,
+            marginVertical: 30,
+            paddingHorizontal: 10,
+            width: "45%",
+            paddingVertical: 10,
+          }}
+        >
+          <Text
+            style={{
+              color: "white",
+              fontSize: 20,
+              fontWeight: "bold",
+              marginLeft: 10,
+            }}
+          >
+            Expense
+          </Text>
+          <FontAwesome5
+            name="money-bill-wave"
+            size={24}
+            color="white"
+            style={{
+              marginLeft: 10,
+            }}
+          />
+          <Text
+            style={{
+              color: "white",
+              fontSize: 20,
+              fontWeight: "bold",
+              marginLeft: 10,
+              marginTop: 20,
+            }}
+          >
+            ₺{handleRevenue().total}{" "}
+          </Text>
+        </View>
+      </View>
+
+      <View>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            marginLeft: 20,
+            marginTop: 20,
+          }}
+        >
+          Revenue
+        </Text>
+      </View>
+
+      <View
+        style={{
+          borderRadius: 16,
+          backgroundColor: "#ff981d",
+          marginHorizontal: 20,
+          overflow: "hidden",
+          marginVertical: 30,
+        }}
+      >
+        <LineChart
+          withInnerLines={false}
+          data={data}
+          yAxisSuffix="k"
+          bezier
+          horizontalLabelRotation={30}
+          width={screenWidth}
+          height={220}
+          chartConfig={chartConfig}
+        />
+      </View>
+
+      <View>
+        <Text
+          style={{
+            fontSize: 20,
+            fontWeight: "bold",
+            marginLeft: 20,
+          }}
+        >
+          Expenses
+        </Text>
+      </View>
+      <View
+        style={{
+          borderRadius: 16,
+          backgroundColor: "#fe3b67",
+          marginHorizontal: 20,
+          overflow: "hidden",
+          marginVertical: 30,
+          paddingVertical: 20,
+        }}
+      >
+        <BarChart
+          barWidth={30}
+          noOfSections={3}
+          isAnimated={true}
+          barBorderRadius={4}
+          frontColor="lightgray"
+          data={chartData}
+          width={screenWidth}
+          yAxisOffset={0}
+          yAxisAtTop={true}
+          yAxisLabelPrefix={"₺"}
+          yAxisLabelSuffix={"k"}
+          yAxisThickness={0}
+          xAxisLabelTextStyle={{
+            fontSize: 12,
+            color: "white",
+          }}
+          yAxisTextStyle={{
+            marginRight: -15,
+            fontSize: 12,
+            color: "white",
+          }}
+          xAxisThickness={0}
+        />
+      </View>
+    </ScrollView>
   );
 };
 

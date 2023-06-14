@@ -12,6 +12,7 @@ import Settings from "../pages/Settings";
 import { Feather } from "@expo/vector-icons";
 import "react-native-gesture-handler";
 import Details from "../pages/Details";
+import NewProcess from "../pages/NewProcess";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -106,6 +107,18 @@ export default function Navigator() {
           }}
           name="Details"
           component={Details}
+        />
+        <Stack.Screen
+          options={{
+            headerBackTitleVisible: false,
+            headerTitle: "New Process",
+            headerTintColor: "white",
+            headerStyle: {
+              backgroundColor: "#00bbf2",
+            },
+          }}
+          name="NewProcess"
+          component={NewProcess}
         />
       </Stack.Navigator>
     </NavigationContainer>

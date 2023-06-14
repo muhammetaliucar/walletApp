@@ -6,20 +6,22 @@ import {
   View,
 } from "react-native";
 import React from "react";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   textRef: React.MutableRefObject<any>;
 }
 
-const FloatButton = ({ setModalVisible, textRef }: Props) => {
+const FloatButton = ({ setModalVisible, textRef, data }: Props) => {
+  const navigation = useNavigation();
   const handlePress = () => {
-    setModalVisible(true);
-
-    setTimeout(() => {
-      textRef.current.blur();
-      textRef.current.focus();
-    }, 500);
+    // setModalVisible(true);
+    navigation.navigate("NewProcess", { selected: data });
+    // setTimeout(() => {
+    //   textRef.current.blur();
+    //   textRef.current.focus();
+    // }, 500);
   };
 
   return (
