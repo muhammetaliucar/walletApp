@@ -45,7 +45,15 @@ const NewProcess = () => {
   navigation.setOptions({
     headerRight: () => (
       <TouchableOpacity onPress={handleSave}>
-        <Text>Save</Text>
+        <Text
+          style={{
+            fontSize: 18,
+            color: "#fff",
+            fontWeight: "bold",
+          }}
+        >
+          Save
+        </Text>
       </TouchableOpacity>
     ),
   });
@@ -99,7 +107,6 @@ const NewProcess = () => {
             multiline
             // style={{ minHeight: 200 }}
             placeholder="Description"
-            onSelectionChange={(e) => console.log(e)}
           />
         </Pressable>
       </KeyboardAvoidingView>

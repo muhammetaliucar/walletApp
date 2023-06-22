@@ -9,13 +9,14 @@ interface Props {
   setSelected: React.Dispatch<React.SetStateAction<string>>;
   selectedMonth: number;
   setSelectedMonth: React.Dispatch<React.SetStateAction<number>>;
+  setYearVisible: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const CalendarComponent = ({
   selected,
   setSelected,
   setSelectedMonth,
-  selectedMonth,
+  setYearVisible,
 }: Props) => {
   const navigation = useNavigation();
 
@@ -24,7 +25,9 @@ const CalendarComponent = ({
   const dates = data.map((item) => item.date);
 
   const handleMonthChange = (month: any) => {
+    console.log(month);
     setSelectedMonth(month[0].dateString.split("-")[1]);
+    setYearVisible(month[0].year);
   };
   return (
     <Calendar
@@ -43,7 +46,6 @@ const CalendarComponent = ({
         shadowOpacity: 0.1,
         shadowRadius: 10,
         elevation: 5,
-
         marginBottom: 20,
       }}
       firstDay={1}
@@ -53,6 +55,9 @@ const CalendarComponent = ({
           date: day.dateString,
         });
       }}
+      monthFormat={"MMMM yyyy"}
+      disableMonthChange={true}
+      hideExtraDays={true}
       markedDates={{
         [selected]: {
           selected: true,
