@@ -1,10 +1,9 @@
 import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useContext, useEffect } from "react";
-import { LineChart, ProgressChart } from "react-native-chart-kit";
+import { LineChart } from "react-native-chart-kit";
 import UserContext from "../contexts/UserContext";
 import { BarChart, PieChart } from "react-native-gifted-charts";
-import { PRIMARY_COLOR } from "../styles";
-import { FontAwesome5 } from "@expo/vector-icons";
+import StatsCard from "../components/StatsCard";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -86,6 +85,36 @@ const Stats = () => {
     }
   };
 
+  const handleExpense = () => {
+    let expense = [];
+    let expenseData = [];
+    let total = 0;
+
+    for (let i = 0; i < monthsNumber + 1; i++) {
+      const exp = userData
+        .filter(
+          (item) =>
+            item.date.split("-")[1] === (i + 1).toString().padStart(2, "0") &&
+            item.type === "Expense"
+        )
+        .reduce((acc, item) => acc + item.total, 0);
+
+      console.log(exp, "exp");
+      const data = {
+        value: exp / 1000,
+        label: months[i].slice(0, 3),
+        frontColor: "white",
+      };
+      total += exp;
+      const month = exp / 1000;
+      expense.push(data);
+      expenseData.push(month);
+    }
+    return { expense, expenseData, total };
+  };
+
+  console.log(handleExpense().total);
+
   const handleRevenue = () => {
     let revenue = [];
     let revenueData = [];
@@ -98,14 +127,12 @@ const Stats = () => {
             item.date.split("-")[1] === (i + 1).toString().padStart(2, "0")
         )
         .reduce((acc, item) => acc + item.total, 0);
-
       const data = {
         value: rev / 1000,
         label: months[i].slice(0, 3),
         frontColor: "white",
       };
       total += rev;
-
       const month = rev / 1000;
       revenue.push(data);
       revenueData.push(month);
@@ -154,86 +181,8 @@ const Stats = () => {
           justifyContent: "space-around",
         }}
       >
-        <View
-          style={{
-            backgroundColor: "#ff981d",
-            borderRadius: 6,
-            marginVertical: 30,
-            paddingHorizontal: 10,
-            width: "45%",
-            paddingVertical: 10,
-          }}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontSize: 20,
-              fontWeight: "bold",
-              marginLeft: 10,
-            }}
-          >
-            Revenue
-          </Text>
-          <FontAwesome5
-            name="money-bill-wave"
-            size={24}
-            color="white"
-            style={{
-              marginLeft: 10,
-            }}
-          />
-          <Text
-            style={{
-              color: "white",
-              fontSize: 20,
-              fontWeight: "bold",
-              marginLeft: 10,
-              marginTop: 20,
-            }}
-          >
-            ₺{handleRevenue().total}{" "}
-          </Text>
-        </View>
-        <View
-          style={{
-            backgroundColor: "#ff981d",
-            borderRadius: 6,
-            marginVertical: 30,
-            paddingHorizontal: 10,
-            width: "45%",
-            paddingVertical: 10,
-          }}
-        >
-          <Text
-            style={{
-              color: "white",
-              fontSize: 20,
-              fontWeight: "bold",
-              marginLeft: 10,
-            }}
-          >
-            Expense
-          </Text>
-          <FontAwesome5
-            name="money-bill-wave"
-            size={24}
-            color="white"
-            style={{
-              marginLeft: 10,
-            }}
-          />
-          <Text
-            style={{
-              color: "white",
-              fontSize: 20,
-              fontWeight: "bold",
-              marginLeft: 10,
-              marginTop: 20,
-            }}
-          >
-            ₺{handleRevenue().total}{" "}
-          </Text>
-        </View>
+        <StatsCard title="Revenue" value={handleRevenue().total} />
+        <StatsCard title="Expense" value={handleExpense().total} />
       </View>
 
       <View>
@@ -242,7 +191,7 @@ const Stats = () => {
             fontSize: 20,
             fontWeight: "bold",
             marginLeft: 20,
-            marginTop: 20,
+            marginTop: 10,
           }}
         >
           Revenue

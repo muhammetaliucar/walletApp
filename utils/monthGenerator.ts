@@ -4,28 +4,28 @@ export const monthGenerator = (date: string) => {
   const day = parseInt(date.split("-")[2]);
   switch (month) {
     case 1:
-      return "January";
+      return `${day} January ${year} `;
     case 2:
-      return "February";
+      return `${day} February ${year} `;
     case 3:
-      return "March";
+      return `${day} March ${year} `;
     case 4:
-      return "April";
+      return `${day} April ${year} `;
     case 5:
-      return "May";
+      return `${day} May ${year} `;
     case 6:
       return `${day} June ${year} `;
     case 7:
-      return "July";
+      return `${day} July ${year} `;
     case 8:
-      return "August";
+      return `${day} August ${year} `;
     case 9:
-      return "September";
+      return `${day} September ${year} `;
     case 10:
-      return "October";
+      return `${day} October ${year} `;
     case 11:
-      return "November";
+      return `${day} November ${year} `;
     case 12:
-      return "December";
+      return `${day} December ${year} `;
   }
 };

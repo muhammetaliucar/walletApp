@@ -24,13 +24,12 @@ import { AntDesign } from "@expo/vector-icons";
 export default function Home() {
   const { data } = useContext(UserContext);
 
-  console.log(data, "data");
-
   const [modalVisible, setModalVisible] = useState(false);
   const textRef = useRef(null);
   const [monthVisible, setMonthVisible] = useState(
     (new Date().getMonth() + 1).toString().padStart(2, "0")
   );
+  const [yearVisible, setYearVisible] = useState(new Date().getFullYear());
   const [selected, setSelected] = useState(
     new Date().toISOString().slice(0, 10)
   );
@@ -40,28 +39,41 @@ export default function Home() {
     () =>
       data
         .sort((a, b) => b.createdAt - a.createdAt)
-        .filter((item) => item.date.split("-")[1] === monthVisible)
+        .filter(
+          (item) =>
+            item.date.split("-")[1] === monthVisible &&
+            item.date.split("-")[0] === yearVisible.toString()
+        )
         .slice(0, 3),
     [data, monthVisible]
   );
 
-  useEffect(() => {
-    if (filteredData().length === 0) {
-      setDateData((prev) => [
-        ...prev,
-        {
-          date: selected,
-          revenue: 0,
-          expense: 0,
-          balance: 0,
-        },
-      ]);
-    }
-  }, [selected, filteredData]);
-
   const animatedValue = useRef(new Animated.Value(0)).current;
+  const handleProcess = useCallback(() => {
+    const revenue = data
+      .filter(
+        (item) =>
+          item.type === "Revenue" &&
+          item.date.split("-")[1] === monthVisible &&
+          item.date.split("-")[0] === yearVisible.toString()
+      )
+      .reduce((acc, item) => {
+        return acc + item.total;
+      }, 0);
+    const expense = data
+      .filter(
+        (item) =>
+          item.type === "Expense" &&
+          item.date.split("-")[1] === monthVisible &&
+          item.date.split("-")[0] === yearVisible.toString()
+      )
+      .reduce((acc, item) => acc + item.total, 0);
+    const balance = revenue - expense;
+    return { revenue, expense, balance };
+  }, [data, monthVisible]);
 
   useEffect(() => {
+    console.log("animated");
     const animation = Animated.timing(animatedValue, {
       toValue: 1,
       duration: 1000,
@@ -76,28 +88,21 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    handleProcess();
-  }, [monthVisible]);
+    console.log("selected");
+    if (filteredData().length === 0) {
+      setDateData((prev) => [
+        ...prev,
+        {
+          date: selected,
+          revenue: 0,
+          expense: 0,
+          balance: 0,
+        },
+      ]);
+    }
+  }, [selected, filteredData]);
 
-  const handleProcess = useCallback(() => {
-    const revenue = data
-      .filter(
-        (item) =>
-          item.type === "Revenue" && item.date.split("-")[1] === monthVisible
-      )
-      .reduce((acc, item) => {
-        return acc + item.total;
-      }, 0);
-    const expense = data
-      .filter(
-        (item) =>
-          item.type === "Expense" && item.date.split("-")[1] === monthVisible
-      )
-      .reduce((acc, item) => acc + item.total, 0);
-    const balance = revenue - expense;
-    return { revenue, expense, balance };
-  }, [data, monthVisible]);
-
+  console.log(yearVisible, "yearVisible");
   return (
     <>
       <ScrollView
@@ -116,6 +121,7 @@ export default function Home() {
             setSelected={setSelected}
             selectedMonth={monthVisible}
             setSelectedMonth={setMonthVisible}
+            setYearVisible={setYearVisible}
           />
           <Text
             style={{
