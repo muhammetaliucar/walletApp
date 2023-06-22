@@ -14,7 +14,6 @@ import {
   Text,
   ScrollView,
 } from "react-native";
-import ProcessModal from "../components/ProcessModal";
 import FloatButton from "../components/FloatButton";
 import CalendarComponent from "../components/CalendarComponent";
 import Card from "../components/Card";
@@ -23,9 +22,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 export default function Home() {
   const { data, currency } = useContext(UserContext);
-
-  const [modalVisible, setModalVisible] = useState(false);
-  const textRef = useRef(null);
+  const animatedValue = useRef(new Animated.Value(0)).current;
   const [monthVisible, setMonthVisible] = useState(
     (new Date().getMonth() + 1).toString().padStart(2, "0")
   );
@@ -48,7 +45,6 @@ export default function Home() {
     [data, monthVisible]
   );
 
-  const animatedValue = useRef(new Animated.Value(0)).current;
   const handleProcess = useCallback(() => {
     const revenue = data
       .filter(
@@ -102,7 +98,6 @@ export default function Home() {
     }
   }, [selected, filteredData]);
 
-  console.log(yearVisible, "yearVisible");
   return (
     <>
       <ScrollView
@@ -123,36 +118,12 @@ export default function Home() {
             setSelectedMonth={setMonthVisible}
             setYearVisible={setYearVisible}
           />
-          <Text
-            style={{
-              fontSize: 30,
-              fontWeight: "bold",
-              color: "#4a4a4a",
-              marginVertical: 20,
-            }}
-          >
+          <Text style={styles.priceText}>
             {currency}
             {handleProcess().balance.toFixed(2)}
           </Text>
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              marginTop: 14,
-              alignSelf: "flex-start",
-              marginStart: 20,
-            }}
-          >
-            <Text
-              style={{
-                fontSize: 14,
-                fontWeight: "300",
-                color: "#4a4a4a",
-                marginEnd: 10,
-              }}
-            >
-              RECENT TRANSACTIONS
-            </Text>
+          <View style={styles.recentView}>
+            <Text style={styles.recentText}>RECENT TRANSACTIONS</Text>
             <AntDesign name="arrowright" size={16} color="black" />
           </View>
           {filteredData().length === 0 ? (
@@ -199,20 +170,8 @@ export default function Home() {
             })
           )}
         </SafeAreaView>
-        <ProcessModal
-          setDateData={setDateData}
-          selected={selected}
-          dateData={dateData}
-          modalVisible={modalVisible}
-          setModalVisible={setModalVisible}
-          textRef={textRef}
-        />
       </ScrollView>
-      <FloatButton
-        setModalVisible={setModalVisible}
-        textRef={textRef}
-        data={selected}
-      />
+      <FloatButton data={selected} />
     </>
   );
 }
@@ -221,5 +180,24 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "#fff",
     alignItems: "center",
+  },
+  recentText: {
+    fontSize: 14,
+    fontWeight: "300",
+    color: "#4a4a4a",
+    marginEnd: 10,
+  },
+  recentView: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 14,
+    alignSelf: "flex-start",
+    marginStart: 20,
+  },
+  priceText: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#4a4a4a",
+    marginVertical: 20,
   },
 });

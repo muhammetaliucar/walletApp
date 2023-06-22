@@ -16,23 +16,8 @@ const CurrencyCard = React.forwardRef(({ data }, ref) => {
   };
 
   return (
-    <TouchableOpacity
-      onPress={handleCurrency}
-      style={{
-        flexDirection: "row",
-        justifyContent: "space-between",
-        marginVertical: 10,
-      }}
-    >
-      <Text
-        style={{
-          fontSize: 18,
-          marginLeft: 10,
-          color: "black",
-        }}
-      >
-        {data.currency}
-      </Text>
+    <TouchableOpacity onPress={handleCurrency} style={styles.view}>
+      <Text style={styles.currencyText}>{data.currency}</Text>
       {data.value === currency && (
         <AntDesign name="check" size={24} color="black" />
       )}
@@ -42,4 +27,17 @@ const CurrencyCard = React.forwardRef(({ data }, ref) => {
 
 export default CurrencyCard;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  currencyText: {
+    fontSize: 18,
+    marginLeft: 10,
+    color: "black",
+  },
+  view: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    borderTopWidth: 1,
+    paddingVertical: 10,
+    borderColor: "lightgray",
+  },
+});

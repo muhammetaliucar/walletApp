@@ -11,7 +11,6 @@ import { useRoute } from "@react-navigation/native";
 import UserContext from "../contexts/UserContext";
 import Card from "../components/Card";
 import FloatButton from "../components/FloatButton";
-import ProcessModal from "../components/ProcessModal";
 
 const Details = () => {
   const route = useRoute();
@@ -63,12 +62,6 @@ const Details = () => {
         data={selected}
         textRef={textRef}
         setModalVisible={setModalVisible}
-      />
-      <ProcessModal
-        selected={selected}
-        modalVisible={modalVisible}
-        setModalVisible={setModalVisible}
-        textRef={textRef}
       />
     </SafeAreaView>
   );

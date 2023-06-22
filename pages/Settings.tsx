@@ -7,13 +7,14 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
 import UserContext from "../contexts/UserContext";
 import { Fontisto } from "@expo/vector-icons";
 import BottomSheet from "../components/BottomSheet";
 import CurrencyCard from "../components/CurrencyCard";
+import { useIsFocused } from "@react-navigation/native";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -38,15 +39,35 @@ const currencyData = [
     currency: "£ - British Pound",
     value: "£",
   },
+  {
+    id: 5,
+    currency: "¥ - Japanese Yen",
+    value: "¥",
+  },
+  {
+    id: 6,
+    currency: "₹ - Indian Rupee",
+    value: "₹",
+  },
+  {
+    id: 7,
+    currency: "R - South African Rand",
+    value: "R",
+  },
 ];
 
 const Settings = () => {
+  const isFocused = useIsFocused();
   const { setData } = useContext(UserContext);
   const currencyBottomSheetRef = useRef(null);
   const handleDeleteData = () => {
     AsyncStorage.clear();
     setData([]);
   };
+
+  useEffect(() => {
+    currencyBottomSheetRef.current?.scrollTo(0);
+  }, [isFocused]);
 
   const handleCurrency = () => {
     currencyBottomSheetRef.current?.scrollTo(-SCREEN_HEIGHT / 1);
@@ -65,39 +86,6 @@ const Settings = () => {
 
   return (
     <>
-      <TouchableOpacity
-        onPress={showAlert}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginHorizontal: 10,
-          marginVertical: 10,
-          backgroundColor: "white",
-          padding: 10,
-          borderRadius: 10,
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "#f5f5f5",
-            padding: 10,
-            borderRadius: 10,
-          }}
-        >
-          <MaterialIcons name="delete-outline" size={18} color="black" />
-        </View>
-        <View>
-          <Text
-            style={{
-              fontSize: 16,
-              marginLeft: 10,
-              color: "black",
-            }}
-          >
-            Delete All Data
-          </Text>
-        </View>
-      </TouchableOpacity>
       <TouchableOpacity
         onPress={handleCurrency}
         style={{
@@ -128,6 +116,39 @@ const Settings = () => {
             }}
           >
             Currency
+          </Text>
+        </View>
+      </TouchableOpacity>
+      <TouchableOpacity
+        onPress={showAlert}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginHorizontal: 10,
+          marginVertical: 10,
+          backgroundColor: "white",
+          padding: 10,
+          borderRadius: 10,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "#f5f5f5",
+            padding: 10,
+            borderRadius: 10,
+          }}
+        >
+          <MaterialIcons name="delete-outline" size={18} color="black" />
+        </View>
+        <View>
+          <Text
+            style={{
+              fontSize: 16,
+              marginLeft: 10,
+              color: "black",
+            }}
+          >
+            Delete All Data
           </Text>
         </View>
       </TouchableOpacity>

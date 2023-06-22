@@ -13,7 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../contexts/UserContext";
 import { monthGenerator } from "../utils/monthGenerator";
 import { AntDesign } from "@expo/vector-icons";
-import { PRIMARY_COLOR, RED } from "../styles";
+import { EDIT, PRIMARY_COLOR, RED } from "../styles";
 import ReactNativeModal from "react-native-modal";
 
 interface Props {
@@ -182,7 +182,6 @@ const Card = ({ item, animatedValue }: Props) => {
               borderRadius: 6,
               height: "50%",
               paddingHorizontal: 20,
-
               width: "80%",
             }}
           >
@@ -287,15 +286,13 @@ const styles = StyleSheet.create({
     width: 100,
     height: 70,
     marginTop: 10,
-    // borderRadius: 10,
   },
   editBox: {
-    backgroundColor: "#06d6a0",
+    backgroundColor: EDIT,
     justifyContent: "center",
     alignItems: "center",
     width: 100,
     height: 70,
     marginTop: 10,
-    // borderRadius: 10,
   },
 });
