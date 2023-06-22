@@ -7,8 +7,8 @@ import UserContext from "../contexts/UserContext";
 interface Props {
   selected: string;
   setSelected: React.Dispatch<React.SetStateAction<string>>;
-  selectedMonth: number;
-  setSelectedMonth: React.Dispatch<React.SetStateAction<number>>;
+  selectedMonth: string;
+  setSelectedMonth: React.Dispatch<React.SetStateAction<string>>;
   setYearVisible: React.Dispatch<React.SetStateAction<number>>;
 }
 

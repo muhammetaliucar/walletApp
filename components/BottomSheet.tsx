@@ -7,12 +7,12 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
-  withTiming,
 } from "react-native-reanimated";
+import { WHITE } from "../styles";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const MAX_TRANSLATE_Y = -SCREEN_HEIGHT + 50;
+const MAX_TRANSLATE_Y = -SCREEN_HEIGHT;
 
 type BottomSheetProps = {
   children?: React.ReactNode;
@@ -46,15 +46,18 @@ const BottomSheet = React.forwardRef<BottomSheetRefProps, BottomSheetProps>(
 
     const context = useSharedValue({ y: 0 });
     const gesture = Gesture.Pan()
+      .runOnJS()
       .onStart(() => {
         context.value = { y: translateY.value };
       })
       .onUpdate((event) => {
-        translateY.value = event.translationY + context.value.y;
-        translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
+        translateY.value = translateY.value = Math.max(
+          event.translationY + context.value.y,
+          MAX_TRANSLATE_Y
+        );
       })
       .onEnd(() => {
-        if (translateY.value > -SCREEN_HEIGHT / 3) {
+        if (translateY.value > -SCREEN_HEIGHT / 1) {
           scrollTo(0);
         } else if (translateY.value < -SCREEN_HEIGHT / 1.5) {
           scrollTo(MAX_TRANSLATE_Y);
@@ -90,7 +93,7 @@ const styles = StyleSheet.create({
   bottomSheetContainer: {
     height: SCREEN_HEIGHT,
     width: "100%",
-    backgroundColor: "white",
+    backgroundColor: WHITE,
     position: "absolute",
     top: SCREEN_HEIGHT,
     borderRadius: 25,

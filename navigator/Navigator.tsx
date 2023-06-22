@@ -1,8 +1,11 @@
 import React, { useContext, useEffect } from "react";
 import Home from "../pages/Home";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import {
+  CardStyleInterpolators,
+  createStackNavigator,
+} from "@react-navigation/stack";
 import Stats from "../pages/Stats";
 import UserContext from "../contexts/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -13,17 +16,26 @@ import { Feather } from "@expo/vector-icons";
 import "react-native-gesture-handler";
 import Details from "../pages/Details";
 import NewProcess from "../pages/NewProcess";
+import { PRIMARY_COLOR } from "../styles";
 
-const Stack = createNativeStackNavigator();
+const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function Navigator() {
-  const { data, setData } = useContext(UserContext);
+  const { data, setData, setCurrency, currency } = useContext(UserContext);
 
   const fetchData = async () => {
-    const dataN = await AsyncStorage.getItem("data");
-    if (dataN) {
-      const parsedData = JSON.parse(dataN);
+    const storageData = await AsyncStorage.getItem("data");
+    const currency = await AsyncStorage.getItem("currency");
+
+    if (currency) {
+      setCurrency(currency);
+    } else {
+      setCurrency("$");
+    }
+
+    if (storageData) {
+      const parsedData = JSON.parse(storageData);
       setData(parsedData);
     }
   };
@@ -32,14 +44,14 @@ export default function Navigator() {
     fetchData();
   }, []);
 
-  if (!data) return null;
+  if (!data && !currency) return null;
 
   const BottomTab = () => {
     return (
       <Tab.Navigator
         screenOptions={{
           headerShown: false,
-          tabBarActiveTintColor: "#00bbf2",
+          tabBarActiveTintColor: PRIMARY_COLOR,
           tabBarInactiveTintColor: "gray",
           tabBarStyle: {
             backgroundColor: "#f5f5f5",
@@ -87,7 +99,7 @@ export default function Navigator() {
           headerBackTitleVisible: false,
           headerTitle: "Expense Tracker",
           headerStyle: {
-            backgroundColor: "#00bbf2",
+            backgroundColor: PRIMARY_COLOR,
           },
           headerTintColor: "white",
           headerTitleStyle: {
@@ -101,8 +113,10 @@ export default function Navigator() {
             headerBackTitleVisible: false,
             headerTitle: "Details",
             headerTintColor: "white",
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+
             headerStyle: {
-              backgroundColor: "#00bbf2",
+              backgroundColor: PRIMARY_COLOR,
             },
           }}
           name="Details"
@@ -113,8 +127,10 @@ export default function Navigator() {
             headerBackTitleVisible: false,
             headerTitle: "New Process",
             headerTintColor: "white",
+            cardStyleInterpolator:
+              CardStyleInterpolators.forModalPresentationIOS,
             headerStyle: {
-              backgroundColor: "#00bbf2",
+              backgroundColor: PRIMARY_COLOR,
             },
           }}
           name="NewProcess"

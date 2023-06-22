@@ -1,18 +1,21 @@
 import { StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { Feather } from "@expo/vector-icons";
-import { RED, SECONDARY_COLOR } from "../styles";
+import { RED, REVENUE } from "../styles";
+import UserContext from "../contexts/UserContext";
 
-const StatsCard = ({ value, title }) => {
+interface Props {
+  value: number;
+  title: string;
+}
+
+const StatsCard = ({ value, title }: Props) => {
+  const { currency } = useContext(UserContext);
   return (
     <View
       style={{
-        backgroundColor: title === "Expense" ? RED : SECONDARY_COLOR,
-        borderRadius: 6,
-        marginVertical: 30,
-        paddingHorizontal: 10,
-        width: "45%",
-        paddingVertical: 10,
+        ...styles.container,
+        backgroundColor: title === "Expense" ? RED : REVENUE,
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -21,27 +24,11 @@ const StatsCard = ({ value, title }) => {
         ) : (
           <Feather name="arrow-down-right" size={24} color="white" />
         )}
-        <Text
-          style={{
-            color: "white",
-            fontSize: 14,
-            fontWeight: "bold",
-          }}
-        >
-          {title}
-        </Text>
+        <Text style={styles.title}>{title}</Text>
       </View>
 
-      <Text
-        style={{
-          color: "white",
-          fontSize: 20,
-          fontWeight: "bold",
-          marginLeft: 10,
-          marginTop: 10,
-        }}
-      >
-        ₺{value}{" "}
+      <Text style={styles.value}>
+        {currency} {value}
       </Text>
     </View>
   );
@@ -49,4 +36,24 @@ const StatsCard = ({ value, title }) => {
 
 export default StatsCard;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  value: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "bold",
+    marginLeft: 10,
+    marginTop: 10,
+  },
+  container: {
+    borderRadius: 6,
+    marginVertical: 30,
+    paddingHorizontal: 10,
+    width: "45%",
+    paddingVertical: 10,
+  },
+  title: {
+    color: "white",
+    fontSize: 14,
+    fontWeight: "bold",
+  },
+});

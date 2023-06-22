@@ -11,10 +11,9 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../contexts/UserContext";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { monthGenerator } from "../utils/monthGenerator";
 import { AntDesign } from "@expo/vector-icons";
-import { PRIMARY_COLOR, RED } from "../styles";
+import { EDIT, PRIMARY_COLOR, RED } from "../styles";
 import ReactNativeModal from "react-native-modal";
 
 interface Props {
@@ -24,6 +23,7 @@ interface Props {
 
 const Card = ({ item, animatedValue }: Props) => {
   const date = monthGenerator(item.date);
+  const { currency } = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
 
   const { data, setData } = useContext(UserContext);
@@ -151,7 +151,8 @@ const Card = ({ item, animatedValue }: Props) => {
                 fontWeight: "bold",
               }}
             >
-              ₺{item.total}
+              {currency}
+              {item.total}
             </Text>
             <Text
               style={{
@@ -181,7 +182,6 @@ const Card = ({ item, animatedValue }: Props) => {
               borderRadius: 6,
               height: "50%",
               paddingHorizontal: 20,
-
               width: "80%",
             }}
           >
@@ -286,15 +286,13 @@ const styles = StyleSheet.create({
     width: 100,
     height: 70,
     marginTop: 10,
-    // borderRadius: 10,
   },
   editBox: {
-    backgroundColor: "#06d6a0",
+    backgroundColor: EDIT,
     justifyContent: "center",
     alignItems: "center",
     width: 100,
     height: 70,
     marginTop: 10,
-    // borderRadius: 10,
   },
 });
