@@ -22,7 +22,7 @@ import UserContext from "../contexts/UserContext";
 import { AntDesign } from "@expo/vector-icons";
 
 export default function Home() {
-  const { data } = useContext(UserContext);
+  const { data, currency } = useContext(UserContext);
 
   const [modalVisible, setModalVisible] = useState(false);
   const textRef = useRef(null);
@@ -131,7 +131,8 @@ export default function Home() {
               marginVertical: 20,
             }}
           >
-            ₺{handleProcess().balance.toFixed(2)}
+            {currency}
+            {handleProcess().balance.toFixed(2)}
           </Text>
           <View
             style={{

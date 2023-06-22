@@ -1,14 +1,55 @@
-import { Alert, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useContext } from "react";
+import {
+  Alert,
+  Dimensions,
+  FlatList,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import React, { useContext, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
 import UserContext from "../contexts/UserContext";
+import { Fontisto } from "@expo/vector-icons";
+import BottomSheet from "../components/BottomSheet";
+import CurrencyCard from "../components/CurrencyCard";
+
+const { height: SCREEN_HEIGHT } = Dimensions.get("window");
+
+const currencyData = [
+  {
+    id: 1,
+    currency: "₺ - Turkey Lira",
+    value: "₺",
+  },
+  {
+    id: 2,
+    currency: "$ - United States Dollar",
+    value: "$",
+  },
+  {
+    id: 3,
+    currency: "€ - Euro",
+    value: "€",
+  },
+  {
+    id: 4,
+    currency: "£ - British Pound",
+    value: "£",
+  },
+];
 
 const Settings = () => {
-  const { data, setData } = useContext(UserContext);
+  const { setData } = useContext(UserContext);
+  const currencyBottomSheetRef = useRef(null);
   const handleDeleteData = () => {
     AsyncStorage.clear();
     setData([]);
+  };
+
+  const handleCurrency = () => {
+    currencyBottomSheetRef.current?.scrollTo(-SCREEN_HEIGHT / 1);
   };
 
   const showAlert = () => {
@@ -23,17 +64,107 @@ const Settings = () => {
   };
 
   return (
-    <View
-      style={{
-        flexDirection: "row",
-        alignItems: "center",
-      }}
-    >
-      <MaterialIcons name="delete-outline" size={24} color="black" />
-      <TouchableOpacity onPress={showAlert}>
-        <Text>Delete All Data</Text>
+    <>
+      <TouchableOpacity
+        onPress={showAlert}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginHorizontal: 10,
+          marginVertical: 10,
+          backgroundColor: "white",
+          padding: 10,
+          borderRadius: 10,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "#f5f5f5",
+            padding: 10,
+            borderRadius: 10,
+          }}
+        >
+          <MaterialIcons name="delete-outline" size={18} color="black" />
+        </View>
+        <View>
+          <Text
+            style={{
+              fontSize: 16,
+              marginLeft: 10,
+              color: "black",
+            }}
+          >
+            Delete All Data
+          </Text>
+        </View>
       </TouchableOpacity>
-    </View>
+      <TouchableOpacity
+        onPress={handleCurrency}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginHorizontal: 10,
+          marginVertical: 10,
+          backgroundColor: "white",
+          padding: 10,
+          borderRadius: 10,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "#f5f5f5",
+            padding: 10,
+            borderRadius: 10,
+          }}
+        >
+          <Fontisto name="money-symbol" size={24} color="black" />
+        </View>
+        <View>
+          <Text
+            style={{
+              fontSize: 16,
+              marginLeft: 10,
+              color: "black",
+            }}
+          >
+            Currency
+          </Text>
+        </View>
+      </TouchableOpacity>
+      <BottomSheet ref={currencyBottomSheetRef}>
+        <View
+          style={{
+            marginHorizontal: 10,
+            marginVertical: 10,
+            backgroundColor: "white",
+          }}
+        >
+          <Text
+            style={{
+              fontSize: 20,
+              fontWeight: "500",
+              marginLeft: 10,
+              textAlign: "center",
+              color: "black",
+              marginBottom: 30,
+            }}
+          >
+            Your current curreny:
+          </Text>
+          <FlatList
+            data={currencyData}
+            renderItem={({ item }) => (
+              <CurrencyCard
+                data={item}
+                ref={currencyBottomSheetRef}
+                key={item.id}
+              />
+            )}
+            keyExtractor={(item) => item.id.toString()}
+          />
+        </View>
+      </BottomSheet>
+    </>
   );
 };
 

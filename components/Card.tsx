@@ -11,7 +11,6 @@ import Swipeable from "react-native-gesture-handler/Swipeable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../contexts/UserContext";
-import { FontAwesome5 } from "@expo/vector-icons";
 import { monthGenerator } from "../utils/monthGenerator";
 import { AntDesign } from "@expo/vector-icons";
 import { PRIMARY_COLOR, RED } from "../styles";
@@ -24,6 +23,7 @@ interface Props {
 
 const Card = ({ item, animatedValue }: Props) => {
   const date = monthGenerator(item.date);
+  const { currency } = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
 
   const { data, setData } = useContext(UserContext);
@@ -151,7 +151,8 @@ const Card = ({ item, animatedValue }: Props) => {
                 fontWeight: "bold",
               }}
             >
-              ₺{item.total}
+              {currency}
+              {item.total}
             </Text>
             <Text
               style={{

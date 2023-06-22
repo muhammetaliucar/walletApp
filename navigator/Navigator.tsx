@@ -18,12 +18,20 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function Navigator() {
-  const { data, setData } = useContext(UserContext);
+  const { data, setData, setCurrency, currency } = useContext(UserContext);
 
   const fetchData = async () => {
-    const dataN = await AsyncStorage.getItem("data");
-    if (dataN) {
-      const parsedData = JSON.parse(dataN);
+    const storageData = await AsyncStorage.getItem("data");
+    const currency = await AsyncStorage.getItem("currency");
+
+    if (currency) {
+      setCurrency(currency);
+    } else {
+      setCurrency("$");
+    }
+
+    if (storageData) {
+      const parsedData = JSON.parse(storageData);
       setData(parsedData);
     }
   };
@@ -32,7 +40,7 @@ export default function Navigator() {
     fetchData();
   }, []);
 
-  if (!data) return null;
+  if (!data && !currency) return null;
 
   const BottomTab = () => {
     return (
