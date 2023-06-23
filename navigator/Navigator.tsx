@@ -17,12 +17,16 @@ import "react-native-gesture-handler";
 import Details from "../pages/Details";
 import NewProcess from "../pages/NewProcess";
 import { PRIMARY_COLOR } from "../styles";
+import { AntDesign } from "@expo/vector-icons";
+import { View } from "react-native";
+import { Image } from "react-native";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 export default function Navigator() {
   const { data, setData, setCurrency, currency } = useContext(UserContext);
+  const [isLoading, setIsLoading] = React.useState(false);
 
   const fetchData = async () => {
     const storageData = await AsyncStorage.getItem("data");
@@ -42,9 +46,20 @@ export default function Navigator() {
 
   useEffect(() => {
     fetchData();
+    setTimeout(() => {
+      setIsLoading(true);
+    }, 100);
   }, []);
 
-  if (!data && !currency) return null;
+  if (!isLoading)
+    return (
+      <View>
+        <Image
+          source={require("../assets/splash.png")}
+          style={{ width: "100%", height: "100%" }}
+        />
+      </View>
+    );
 
   const BottomTab = () => {
     return (
@@ -112,9 +127,9 @@ export default function Navigator() {
           options={{
             headerBackTitleVisible: false,
             headerTitle: "Details",
+
             headerTintColor: "white",
             cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
-
             headerStyle: {
               backgroundColor: PRIMARY_COLOR,
             },
@@ -124,6 +139,17 @@ export default function Navigator() {
         />
         <Stack.Screen
           options={{
+            headerLeft(props) {
+              return (
+                <AntDesign
+                  {...props}
+                  style={{ marginLeft: 10 }}
+                  name="close"
+                  size={24}
+                  color="white"
+                />
+              );
+            },
             headerBackTitleVisible: false,
             headerTitle: "New Process",
             headerTintColor: "white",

@@ -15,6 +15,8 @@ import { Fontisto } from "@expo/vector-icons";
 import BottomSheet from "../components/BottomSheet";
 import CurrencyCard from "../components/CurrencyCard";
 import { useIsFocused } from "@react-navigation/native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import * as WebBrowser from "expo-web-browser";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -84,8 +86,58 @@ const Settings = () => {
     ]);
   };
 
+  const openBrowser = async () => {
+    let result = await WebBrowser.openBrowserAsync(
+      "https://www.muhammetaliucar.com"
+    );
+  };
+
   return (
     <>
+      <TouchableOpacity
+        onPress={openBrowser}
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          marginHorizontal: 10,
+          marginVertical: 10,
+          backgroundColor: "white",
+          padding: 10,
+          borderRadius: 10,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          elevation: 5,
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "#f5f5f5",
+            padding: 10,
+            borderRadius: 10,
+          }}
+        >
+          <MaterialCommunityIcons
+            name="human-greeting-variant"
+            size={24}
+            color="black"
+          />
+        </View>
+        <View>
+          <Text
+            style={{
+              fontSize: 16,
+              marginLeft: 10,
+              color: "black",
+            }}
+          >
+            Creator Info
+          </Text>
+        </View>
+      </TouchableOpacity>
       <TouchableOpacity
         onPress={handleCurrency}
         style={{
@@ -96,6 +148,13 @@ const Settings = () => {
           backgroundColor: "white",
           padding: 10,
           borderRadius: 10,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          elevation: 5,
         }}
       >
         <View
@@ -129,6 +188,13 @@ const Settings = () => {
           backgroundColor: "white",
           padding: 10,
           borderRadius: 10,
+          shadowColor: "#000",
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          elevation: 5,
         }}
       >
         <View
