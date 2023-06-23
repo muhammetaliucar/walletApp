@@ -19,6 +19,7 @@ import CalendarComponent from "../components/CalendarComponent";
 import Card from "../components/Card";
 import UserContext from "../contexts/UserContext";
 import { AntDesign } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home() {
   const { data, currency } = useContext(UserContext);

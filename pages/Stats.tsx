@@ -1,8 +1,15 @@
-import { Dimensions, ScrollView, StyleSheet, Text, View } from "react-native";
+import {
+  Alert,
+  Button,
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React, { useContext, useEffect } from "react";
-import { LineChart } from "react-native-chart-kit";
+import { LineChart, BarChart } from "react-native-chart-kit";
 import UserContext from "../contexts/UserContext";
-import { BarChart, PieChart } from "react-native-gifted-charts";
 import StatsCard from "../components/StatsCard";
 
 const screenWidth = Dimensions.get("window").width;
@@ -13,6 +20,17 @@ const chartConfig = {
   backgroundGradientTo: "#fff",
   backgroundGradientToOpacity: 0.5,
   color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White color
+  strokeWidth: 2, // optional, default 3
+  barPercentage: 0.5,
+  useShadowColorFromDataset: false, // optional
+};
+
+const expenseChartConfig = {
+  backgroundGradientFrom: "#fff",
+  backgroundGradientFromOpacity: 0,
+  backgroundGradientTo: "#fff",
+  backgroundGradientToOpacity: 0,
+  color: (opacity = 0) => `rgba(255, 255, 255, ${opacity})`, // White color
   strokeWidth: 2, // optional, default 3
   barPercentage: 0.5,
   useShadowColorFromDataset: false, // optional
@@ -41,7 +59,7 @@ const Stats = () => {
 
   // Verileri aylara göre gruplandırma
   const handleData = () => {
-    if (!data) return;
+    if (!userData) return;
 
     const currentYear = new Date().getFullYear();
     const currentMonth = new Date().getMonth() + 1;
@@ -98,8 +116,6 @@ const Stats = () => {
             item.type === "Expense"
         )
         .reduce((acc, item) => acc + item.total, 0);
-
-      console.log(exp, "exp");
       const data = {
         value: exp / 1000,
         label: months[i].slice(0, 3),
@@ -113,8 +129,6 @@ const Stats = () => {
     return { expense, expenseData, total };
   };
 
-  console.log(handleExpense().total);
-
   const handleRevenue = () => {
     let revenue = [];
     let revenueData = [];
@@ -124,7 +138,8 @@ const Stats = () => {
       const rev = userData
         .filter(
           (item) =>
-            item.date.split("-")[1] === (i + 1).toString().padStart(2, "0")
+            item.date.split("-")[1] === (i + 1).toString().padStart(2, "0") &&
+            item.type === "Revenue"
         )
         .reduce((acc, item) => acc + item.total, 0);
       const data = {
@@ -146,7 +161,7 @@ const Stats = () => {
     handleData();
   }, [userData]);
 
-  const data = {
+  const revenueData = {
     labels: months.slice(0, monthsNumber + 1),
     datasets: [
       {
@@ -154,6 +169,16 @@ const Stats = () => {
       },
     ],
     legend: ["Revenue"],
+  };
+
+  const expenseData = {
+    labels: months.slice(0, monthsNumber + 1),
+    datasets: [
+      {
+        data: handleExpense().expenseData,
+      },
+    ],
+    legend: ["Expense"],
   };
 
   return (
@@ -209,7 +234,7 @@ const Stats = () => {
       >
         <LineChart
           withInnerLines={false}
-          data={data}
+          data={revenueData}
           yAxisSuffix="k"
           bezier
           horizontalLabelRotation={30}
@@ -240,29 +265,15 @@ const Stats = () => {
           paddingVertical: 20,
         }}
       >
-        <BarChart
-          barWidth={30}
-          noOfSections={3}
-          isAnimated={true}
-          barBorderRadius={4}
-          frontColor="lightgray"
-          data={chartData}
+        <LineChart
+          withInnerLines={false}
+          data={expenseData}
+          yAxisSuffix="k"
+          bezier
+          horizontalLabelRotation={30}
           width={screenWidth}
-          yAxisOffset={0}
-          yAxisAtTop={true}
-          yAxisLabelPrefix={"₺"}
-          yAxisLabelSuffix={"k"}
-          yAxisThickness={0}
-          xAxisLabelTextStyle={{
-            fontSize: 12,
-            color: "white",
-          }}
-          yAxisTextStyle={{
-            marginRight: -15,
-            fontSize: 12,
-            color: "white",
-          }}
-          xAxisThickness={0}
+          height={220}
+          chartConfig={expenseChartConfig}
         />
       </View>
     </ScrollView>

@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "walletApp",
-    "slug": "walletApp",
+    "slug": "rimsin",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -21,10 +21,17 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.aliucar.walletApp"
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "bc1ec3f5-ac23-4342-a9d3-835b38bc53c0"
+      }
+    },
+    "owner": "aliucar"
   }
 }

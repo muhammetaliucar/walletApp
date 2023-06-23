@@ -15,13 +15,14 @@ import { monthGenerator } from "../utils/monthGenerator";
 import { AntDesign } from "@expo/vector-icons";
 import { EDIT, PRIMARY_COLOR, RED } from "../styles";
 import ReactNativeModal from "react-native-modal";
+import { useNavigation } from "@react-navigation/native";
 
 interface Props {
   item: any;
-  animatedValue: any;
 }
 
-const Card = ({ item, animatedValue }: Props) => {
+const Card = ({ item }: Props) => {
+  const navigation = useNavigation();
   const date = monthGenerator(item.date);
   const { currency } = useContext(UserContext);
   const [modalVisible, setModalVisible] = useState(false);
@@ -64,11 +65,7 @@ const Card = ({ item, animatedValue }: Props) => {
     return (
       <TouchableOpacity
         onPress={() => {
-          setData((prev) => prev.filter((i) => i.id !== item.id));
-          AsyncStorage.setItem(
-            "data",
-            JSON.stringify(data.filter((i) => i.id !== item.id))
-          );
+          navigation.navigate("NewProcess", { item: item });
         }}
         activeOpacity={0.6}
       >

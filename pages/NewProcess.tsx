@@ -7,26 +7,28 @@ import {
   ScrollView,
   TextInput,
   Pressable,
-  Button,
   Keyboard,
   View,
-  Animated,
 } from "react-native";
 import React, { useContext, useRef, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import UserContext from "../contexts/UserContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { PRIMARY_COLOR, RED } from "../styles";
+import { monthGenerator } from "../utils/monthGenerator";
 
 const NewProcess = () => {
   const route = useRoute();
+  const { selected, item } = route.params;
+
   const navigation = useNavigation();
-  const { selected } = route.params;
   const { data, setData, currency } = useContext(UserContext);
-  const [description, setDescription] = useState<string>("");
   const priceRef = useRef<TextInput>(null);
   const textRef = useRef<TextInput>(null);
-  const [total, setTotal] = useState<number>(0);
+  const [total, setTotal] = useState<number>(item ? item.total : 0);
+  const [description, setDescription] = useState<string>(
+    item ? item.description : ""
+  );
 
   const handleSave = () => {
     let dataN = {
@@ -37,6 +39,26 @@ const NewProcess = () => {
       id: Date.now(),
       createdAt: Date.now(),
     };
+
+    if (item) {
+      const a = data.filter((e) => e.id !== item.id);
+      let dataNItem = {
+        type: modalHeaderSelected,
+        total: total,
+        description: description,
+        date: item.date,
+        id: Date.now(),
+        createdAt: Date.now(),
+      };
+
+      setData(a.concat(dataNItem));
+      AsyncStorage.setItem("data", JSON.stringify([...a, dataNItem]));
+      Keyboard.dismiss();
+      setTotal(0);
+      navigation.goBack();
+      return;
+    }
+
     setData(data.concat(dataN));
     AsyncStorage.setItem("data", JSON.stringify([...data, dataN]));
     Keyboard.dismiss();
@@ -45,8 +67,14 @@ const NewProcess = () => {
   };
 
   navigation.setOptions({
+    headerTitle: () => (
+      <Text style={{ fontSize: 18, color: "#fff", fontWeight: "bold" }}>
+        {item ? monthGenerator(item.date) : monthGenerator(selected)}
+      </Text>
+    ),
+
     headerRight: () => (
-      <TouchableOpacity onPress={handleSave}>
+      <TouchableOpacity onPress={() => handleSave()}>
         <Text
           style={{
             fontSize: 18,
@@ -73,10 +101,6 @@ const NewProcess = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : "height"}
       >
-        {/* <Header
-          modalHeaderSelected={modalHeaderSelected}
-          setModalHeaderSelected={(e) => setModalHeaderSelected(e)}
-        /> */}
         <View
           style={{
             backgroundColor: "white",
@@ -96,6 +120,7 @@ const NewProcess = () => {
         >
           <View>
             <TouchableOpacity
+              activeOpacity={0}
               onPress={() => setModalHeaderSelected("Expense")}
               style={{
                 paddingVertical: 15,
@@ -116,6 +141,7 @@ const NewProcess = () => {
           </View>
 
           <TouchableOpacity
+            activeOpacity={0}
             onPress={() => setModalHeaderSelected("Revenue")}
             style={{
               paddingVertical: 15,
@@ -156,6 +182,7 @@ const NewProcess = () => {
             onChangeText={(text) => setTotal(Number(text))}
             ref={priceRef}
             style={{ flex: 1 }}
+            value={total.toString()}
             inputMode="numeric"
             placeholder="Amount"
           />
@@ -194,6 +221,7 @@ const NewProcess = () => {
           }}
         >
           <TextInput
+            value={description}
             onChangeText={(text) => setDescription(text)}
             ref={textRef}
             multiline
