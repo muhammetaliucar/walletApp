@@ -14,13 +14,11 @@ import FloatButton from "../components/FloatButton";
 
 const Details = () => {
   const route = useRoute();
-  const { data, setData } = useContext(UserContext);
-  const textRef = useRef(null);
-  const [selected, setSelected] = React.useState(route.params.date);
-  const [modalVisible, setModalVisible] = React.useState(false);
+  const { data } = useContext(UserContext);
+  const { date }: any = route.params;
 
   const filteredData = data.filter((item) => {
-    return item.date === route.params.date;
+    return item.date === date;
   });
 
   return (
@@ -55,14 +53,9 @@ const Details = () => {
           alignItems: "center",
         }}
         data={filteredData}
-        keyExtractor={(item) => item.id}
         renderItem={({ item }) => <Card item={item} />}
       />
-      <FloatButton
-        data={selected}
-        textRef={textRef}
-        setModalVisible={setModalVisible}
-      />
+      <FloatButton data={date} />
     </SafeAreaView>
   );
 };

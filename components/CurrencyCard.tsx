@@ -4,7 +4,11 @@ import { AntDesign } from "@expo/vector-icons";
 import UserContext from "../contexts/UserContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const CurrencyCard = React.forwardRef(({ data }, ref) => {
+interface Props {
+  data: any;
+}
+
+const CurrencyCard = React.forwardRef(({ data }: Props, ref) => {
   const { currency, setCurrency } = useContext(UserContext);
 
   const handleCurrency = () => {
@@ -36,7 +40,7 @@ const styles = StyleSheet.create({
   view: {
     flexDirection: "row",
     justifyContent: "space-between",
-    borderTopWidth: 1,
+    borderBottomWidth: 1,
     paddingVertical: 10,
     borderColor: "lightgray",
   },
