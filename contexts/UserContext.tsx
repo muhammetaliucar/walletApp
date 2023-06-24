@@ -1,18 +1,15 @@
 import React, { createContext, useState } from "react";
+import { CalendarData } from "types";
 
-const UserContext = createContext([]);
+const UserContext = createContext<UserContextInterface>({
+  data: [],
+  setData: () => {},
+  currency: "",
+  setCurrency: () => {},
+});
 
 interface Props {
   children: React.ReactNode;
-}
-
-interface CalendarData {
-  createdAt: number;
-  date: string;
-  description: string;
-  id: number;
-  total: number;
-  type: string;
 }
 
 interface UserContextInterface {
@@ -22,15 +19,13 @@ interface UserContextInterface {
   setCurrency: React.Dispatch<React.SetStateAction<string>>;
 }
 
-export const UserFilterContext = createContext({} as UserContextInterface);
+export const UserFilterContext = UserContext;
 
 export const UserProvider = ({ children }: Props) => {
-  const [data, setData] = useState([]);
-  const [currency, setCurrency] = useState("$");
+  const [data, setData] = useState<CalendarData[]>([]);
+  const [currency, setCurrency] = useState<string>("$");
 
-  console.log(data);
-
-  const values = {
+  const values: UserContextInterface = {
     data,
     setData,
     currency,

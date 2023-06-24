@@ -1,74 +1,30 @@
-import {
-  Alert,
-  Dimensions,
-  FlatList,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Alert, Dimensions, ScrollView, Text } from "react-native";
 import React, { useContext, useEffect, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
 import UserContext from "../contexts/UserContext";
 import { Fontisto } from "@expo/vector-icons";
-import BottomSheet from "../components/BottomSheet";
-import CurrencyCard from "../components/CurrencyCard";
-import { useIsFocused } from "@react-navigation/native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import BottomSheet, { BottomSheetRefProps } from "../components/BottomSheet";
+import { useIsFocused, useNavigation } from "@react-navigation/native";
 import * as WebBrowser from "expo-web-browser";
-
-const { height: SCREEN_HEIGHT } = Dimensions.get("window");
-
-const currencyData = [
-  {
-    id: 1,
-    currency: "₺ - Turkey Lira",
-    value: "₺",
-  },
-  {
-    id: 2,
-    currency: "$ - United States Dollar",
-    value: "$",
-  },
-  {
-    id: 3,
-    currency: "€ - Euro",
-    value: "€",
-  },
-  {
-    id: 4,
-    currency: "£ - British Pound",
-    value: "£",
-  },
-  {
-    id: 5,
-    currency: "¥ - Japanese Yen",
-    value: "¥",
-  },
-  {
-    id: 6,
-    currency: "₹ - Indian Rupee",
-    value: "₹",
-  },
-  {
-    id: 7,
-    currency: "R - South African Rand",
-    value: "R",
-  },
-];
+import { currencyData } from "../data/currencyData";
+import SettingsCard from "../components/SettingsCard";
+import SetCurrency from "../components/SetCurrency";
+import { SCREEN_HEIGHT, version } from "../constants";
 
 const Settings = () => {
+  const navigation = useNavigation();
   const isFocused = useIsFocused();
   const { setData } = useContext(UserContext);
-  const currencyBottomSheetRef = useRef(null);
+  const currencyBottomSheetRef = useRef<BottomSheetRefProps>(null);
+
   const handleDeleteData = () => {
     AsyncStorage.clear();
     setData([]);
   };
 
   useEffect(() => {
-    currencyBottomSheetRef.current?.scrollTo(0);
+    currencyBottomSheetRef?.current?.scrollTo(0);
   }, [isFocused]);
 
   const handleCurrency = () => {
@@ -86,175 +42,60 @@ const Settings = () => {
     ]);
   };
 
-  const openBrowser = async () => {
-    let result = await WebBrowser.openBrowserAsync(
-      "https://www.muhammetaliucar.com"
-    );
+  const openBrowser = async (link: string) => {
+    let result = await WebBrowser.openBrowserAsync(link);
   };
 
   return (
     <>
-      <TouchableOpacity
-        onPress={openBrowser}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginHorizontal: 10,
-          marginVertical: 10,
-          backgroundColor: "white",
-          padding: 10,
-          borderRadius: 10,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          elevation: 5,
-        }}
-      >
-        <View
+      <ScrollView>
+        <SettingsCard
+          onPress={() =>
+            openBrowser(
+              "https://www.freeprivacypolicy.com/live/ee8badfc-3fa6-4b47-b582-a752d94e4104"
+            )
+          }
+          text="Privacy Policy"
+          icon={<MaterialIcons name="privacy-tip" size={24} color="black" />}
+        />
+        <SettingsCard
+          onPress={() => navigation.navigate("AboutUs")}
+          text="About Us"
+          icon={<MaterialIcons name="info-outline" size={24} color="black" />}
+        />
+        <SettingsCard
+          onPress={() => openBrowser("https://www.muhammetaliucar.com")}
+          text="Creator Info"
+          icon={<MaterialIcons name="developer-mode" size={24} color="black" />}
+        />
+        <SettingsCard
+          onPress={handleCurrency}
+          icon={<Fontisto name="money-symbol" size={24} color="black" />}
+          text="Currency"
+        />
+        <SettingsCard
+          onPress={showAlert}
+          text="Delete All Data"
+          icon={<MaterialIcons name="delete-outline" size={24} color="black" />}
+        />
+        <Text
           style={{
-            backgroundColor: "#f5f5f5",
-            padding: 10,
-            borderRadius: 10,
+            textAlign: "center",
+            marginTop: 20,
+            color: "gray",
           }}
         >
-          <MaterialCommunityIcons
-            name="human-greeting-variant"
-            size={24}
-            color="black"
-          />
-        </View>
-        <View>
-          <Text
-            style={{
-              fontSize: 16,
-              marginLeft: 10,
-              color: "black",
-            }}
-          >
-            Creator Info
-          </Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={handleCurrency}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginHorizontal: 10,
-          marginVertical: 10,
-          backgroundColor: "white",
-          padding: 10,
-          borderRadius: 10,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          elevation: 5,
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "#f5f5f5",
-            padding: 10,
-            borderRadius: 10,
-          }}
-        >
-          <Fontisto name="money-symbol" size={24} color="black" />
-        </View>
-        <View>
-          <Text
-            style={{
-              fontSize: 16,
-              marginLeft: 10,
-              color: "black",
-            }}
-          >
-            Currency
-          </Text>
-        </View>
-      </TouchableOpacity>
-      <TouchableOpacity
-        onPress={showAlert}
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginHorizontal: 10,
-          marginVertical: 10,
-          backgroundColor: "white",
-          padding: 10,
-          borderRadius: 10,
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 2,
-          },
-          shadowOpacity: 0.25,
-          elevation: 5,
-        }}
-      >
-        <View
-          style={{
-            backgroundColor: "#f5f5f5",
-            padding: 10,
-            borderRadius: 10,
-          }}
-        >
-          <MaterialIcons name="delete-outline" size={18} color="black" />
-        </View>
-        <View>
-          <Text
-            style={{
-              fontSize: 16,
-              marginLeft: 10,
-              color: "black",
-            }}
-          >
-            Delete All Data
-          </Text>
-        </View>
-      </TouchableOpacity>
+          v{version}
+        </Text>
+      </ScrollView>
       <BottomSheet ref={currencyBottomSheetRef}>
-        <View
-          style={{
-            marginHorizontal: 10,
-            marginVertical: 10,
-            backgroundColor: "white",
-          }}
-        >
-          <Text
-            style={{
-              fontSize: 20,
-              fontWeight: "500",
-              marginLeft: 10,
-              textAlign: "center",
-              color: "black",
-              marginBottom: 30,
-            }}
-          >
-            Your current curreny:
-          </Text>
-          <FlatList
-            data={currencyData}
-            renderItem={({ item }) => (
-              <CurrencyCard
-                data={item}
-                ref={currencyBottomSheetRef}
-                key={item.id}
-              />
-            )}
-            keyExtractor={(item) => item.id.toString()}
-          />
-        </View>
+        <SetCurrency
+          currencyData={currencyData}
+          currencyBottomSheetRef={currencyBottomSheetRef}
+        />
       </BottomSheet>
     </>
   );
 };
 
 export default Settings;
-
-const styles = StyleSheet.create({});

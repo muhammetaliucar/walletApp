@@ -55,6 +55,12 @@ const CalendarComponent = ({
           date: day.dateString,
         });
       }}
+      // how to font size of month and day names
+      theme={{
+        textDayFontSize: 14,
+        textMonthFontSize: 14,
+        textDayHeaderFontSize: 14,
+      }}
       monthFormat={"MMMM yyyy"}
       disableMonthChange={true}
       hideExtraDays={true}
@@ -65,7 +71,7 @@ const CalendarComponent = ({
           selectedColor: PRIMARY_COLOR,
           selectedTextColor: WHITE,
         },
-        ...dates.reduce((obj, item) => {
+        ...dates.reduce((obj: any, item) => {
           obj[item] = {
             marked: true,
             dotColor: PRIMARY_COLOR,

@@ -1,56 +1,14 @@
-import {
-  Alert,
-  Button,
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { Dimensions, ScrollView, Text, View } from "react-native";
 import React, { useContext, useEffect } from "react";
 import { LineChart, BarChart } from "react-native-chart-kit";
 import UserContext from "../contexts/UserContext";
 import StatsCard from "../components/StatsCard";
-
-const screenWidth = Dimensions.get("window").width;
-
-const chartConfig = {
-  backgroundGradientFrom: "#fff",
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: "#fff",
-  backgroundGradientToOpacity: 0.5,
-  color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`, // White color
-  strokeWidth: 2, // optional, default 3
-  barPercentage: 0.5,
-  useShadowColorFromDataset: false, // optional
-};
-
-const expenseChartConfig = {
-  backgroundGradientFrom: "#fff",
-  backgroundGradientFromOpacity: 0,
-  backgroundGradientTo: "#fff",
-  backgroundGradientToOpacity: 0,
-  color: (opacity = 0) => `rgba(255, 255, 255, ${opacity})`, // White color
-  strokeWidth: 2, // optional, default 3
-  barPercentage: 0.5,
-  useShadowColorFromDataset: false, // optional
-};
-
-const months = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "Septemper",
-  "October",
-  "November",
-  "December",
-];
-
+import {
+  chartConfig,
+  expenseChartConfig,
+  months,
+  screenWidth,
+} from "../constants";
 const monthsNumber = new Date().getMonth();
 
 const Stats = () => {
@@ -65,7 +23,7 @@ const Stats = () => {
     const currentMonth = new Date().getMonth() + 1;
 
     // Verileri aylara göre gruplandırma
-    const groupedData = {};
+    const groupedData: any = {};
     userData.forEach((item) => {
       const date = new Date(item.date);
       const year = date.getFullYear();
@@ -83,12 +41,12 @@ const Stats = () => {
     });
 
     // Her ay için type'lara göre toplam hesaplama
-    const totalsByMonth = {};
+    const totalsByMonth: any = {};
     for (const key in groupedData) {
       const monthData = groupedData[key];
-      const totalsByType = {};
+      const totalsByType: any = {};
 
-      monthData.forEach((item) => {
+      monthData.forEach((item: any) => {
         const type = item.type;
         const total = item.total || 0;
 
@@ -130,7 +88,7 @@ const Stats = () => {
   };
 
   const handleRevenue = () => {
-    let revenue = [];
+    let revenue: any = [];
     let revenueData = [];
     let total = 0;
 

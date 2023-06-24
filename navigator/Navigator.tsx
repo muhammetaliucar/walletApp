@@ -20,6 +20,7 @@ import { PRIMARY_COLOR } from "../styles";
 import { AntDesign } from "@expo/vector-icons";
 import { View } from "react-native";
 import { Image } from "react-native";
+import AboutUs from "../pages/AboutUs";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -161,6 +162,19 @@ export default function Navigator() {
           }}
           name="NewProcess"
           component={NewProcess}
+        />
+        <Stack.Screen
+          options={{
+            headerBackTitleVisible: false,
+            headerTitle: "About Us",
+            headerTintColor: "white",
+            cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+            headerStyle: {
+              backgroundColor: PRIMARY_COLOR,
+            },
+          }}
+          name="AboutUs"
+          component={AboutUs}
         />
       </Stack.Navigator>
     </NavigationContainer>

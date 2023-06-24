@@ -12,6 +12,8 @@ import {
   View,
   Animated,
   Text,
+  Button,
+  I18nManager,
   ScrollView,
 } from "react-native";
 import FloatButton from "../components/FloatButton";
@@ -19,7 +21,7 @@ import CalendarComponent from "../components/CalendarComponent";
 import Card from "../components/Card";
 import UserContext from "../contexts/UserContext";
 import { AntDesign } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { CalendarData } from "types";
 
 export default function Home() {
   const { data, currency } = useContext(UserContext);
@@ -31,14 +33,13 @@ export default function Home() {
   const [selected, setSelected] = useState(
     new Date().toISOString().slice(0, 10)
   );
-  const [dateData, setDateData] = useState([]);
 
   const filteredData = useCallback(
     () =>
       data
-        .sort((a, b) => b.createdAt - a.createdAt)
+        .sort((a: CalendarData, b: CalendarData) => b.createdAt - a.createdAt)
         .filter(
-          (item) =>
+          (item: CalendarData) =>
             item.date.split("-")[1] === monthVisible &&
             item.date.split("-")[0] === yearVisible.toString()
         )
@@ -49,22 +50,22 @@ export default function Home() {
   const handleProcess = useCallback(() => {
     const revenue = data
       .filter(
-        (item) =>
+        (item: CalendarData) =>
           item.type === "Revenue" &&
           item.date.split("-")[1] === monthVisible &&
           item.date.split("-")[0] === yearVisible.toString()
       )
-      .reduce((acc, item) => {
+      .reduce((acc: any, item: any) => {
         return acc + item.total;
       }, 0);
     const expense = data
       .filter(
-        (item) =>
+        (item: any) =>
           item.type === "Expense" &&
           item.date.split("-")[1] === monthVisible &&
           item.date.split("-")[0] === yearVisible.toString()
       )
-      .reduce((acc, item) => acc + item.total, 0);
+      .reduce((acc: number, item: CalendarData) => acc + item.total, 0);
     const balance = revenue - expense;
     return { revenue, expense, balance };
   }, [data, monthVisible]);
@@ -83,21 +84,6 @@ export default function Home() {
       animation.stop();
     };
   }, []);
-
-  useEffect(() => {
-    console.log("selected");
-    if (filteredData().length === 0) {
-      setDateData((prev) => [
-        ...prev,
-        {
-          date: selected,
-          revenue: 0,
-          expense: 0,
-          balance: 0,
-        },
-      ]);
-    }
-  }, [selected, filteredData]);
 
   return (
     <>
@@ -119,22 +105,29 @@ export default function Home() {
             setSelectedMonth={setMonthVisible}
             setYearVisible={setYearVisible}
           />
-          <Text style={styles.priceText}>
-            {currency}
-            {handleProcess().balance.toFixed(2)}
-          </Text>
+          <View
+            style={{
+              borderWidth: 5,
+              borderColor: "gray",
+              height: 130,
+              width: 130,
+              justifyContent: "center",
+              alignItems: "center",
+              borderRadius: 130,
+            }}
+          >
+            <Text style={{ alignSelf: "center" }}>Balance</Text>
+            <Text style={styles.priceText}>
+              {currency}
+              {handleProcess().balance.toFixed(2)}
+            </Text>
+          </View>
           <View style={styles.recentView}>
             <Text style={styles.recentText}>RECENT TRANSACTIONS</Text>
             <AntDesign name="arrowright" size={16} color="black" />
           </View>
           {filteredData().length === 0 ? (
-            <View
-              style={{
-                marginTop: 20,
-                width: Dimensions.get("window").width,
-                alignItems: "center",
-              }}
-            >
+            <View style={styles.noContentView}>
               <Text
                 style={{
                   fontSize: 16,
@@ -145,7 +138,7 @@ export default function Home() {
               </Text>
             </View>
           ) : (
-            filteredData().map((item, index) => {
+            filteredData().map((item: any, index: number) => {
               return (
                 <Animated.View
                   key={index}
@@ -161,11 +154,7 @@ export default function Home() {
                     ],
                   }}
                 >
-                  <Card
-                    item={item}
-                    dateData={dateData}
-                    setDateData={setDateData}
-                  />
+                  <Card item={item} />
                 </Animated.View>
               );
             })
@@ -196,9 +185,14 @@ const styles = StyleSheet.create({
     marginStart: 20,
   },
   priceText: {
-    fontSize: 30,
+    fontSize: 23,
     fontWeight: "bold",
     color: "#4a4a4a",
-    marginVertical: 20,
+    marginVertical: 10,
+  },
+  noContentView: {
+    marginTop: 20,
+    width: Dimensions.get("window").width,
+    alignItems: "center",
   },
 });

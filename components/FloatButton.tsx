@@ -2,7 +2,11 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
 
-const FloatButton = ({ data }) => {
+interface Props {
+  data: any;
+}
+
+const FloatButton = ({ data }: Props) => {
   const navigation = useNavigation();
   const handlePress = () => {
     navigation.navigate("NewProcess", { selected: data });
@@ -10,7 +14,7 @@ const FloatButton = ({ data }) => {
 
   return (
     <TouchableOpacity onPress={handlePress} style={styles.container}>
-      <Text style={{ fontSize: 30, color: "white" }}>+</Text>
+      <Text style={styles.floatButtonText}>+</Text>
     </TouchableOpacity>
   );
 };
@@ -31,4 +35,5 @@ const styles = StyleSheet.create({
     right: 20,
     alignItems: "center",
   },
+  floatButtonText: { fontSize: 30, color: "white" },
 });
