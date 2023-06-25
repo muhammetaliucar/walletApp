@@ -224,6 +224,8 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
+    fontSize: 20,
+    fontWeight: "bold",
   },
   currency: {
     fontSize: 20,

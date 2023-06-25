@@ -8,7 +8,7 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { WHITE } from "../styles";
+import { WHITE, BOTTOM_SHEET_LINE } from "../styles";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   line: {
     width: 75,
     height: 4,
-    backgroundColor: "grey",
+    backgroundColor: BOTTOM_SHEET_LINE,
     alignSelf: "center",
     marginVertical: 15,
     borderRadius: 2,

@@ -113,7 +113,7 @@ export default function Navigator() {
         screenOptions={{
           headerTitleAlign: "center",
           headerBackTitleVisible: false,
-          headerTitle: "Expense Tracker",
+          headerTitle: "Rimsin",
           headerStyle: {
             backgroundColor: PRIMARY_COLOR,
           },
