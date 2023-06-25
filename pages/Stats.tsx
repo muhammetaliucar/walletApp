@@ -3,6 +3,7 @@ import React, { useContext, useEffect } from "react";
 import { LineChart, BarChart } from "react-native-chart-kit";
 import UserContext from "../contexts/UserContext";
 import StatsCard from "../components/StatsCard";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   chartConfig,
   expenseChartConfig,
@@ -91,6 +92,7 @@ const Stats = () => {
     let revenue: any = [];
     let revenueData = [];
     let total = 0;
+    let processNumber = 0;
 
     for (let i = 0; i < monthsNumber + 1; i++) {
       const rev = userData
@@ -100,12 +102,14 @@ const Stats = () => {
             item.type === "Revenue"
         )
         .reduce((acc, item) => acc + item.total, 0);
+
       const data = {
         value: rev / 1000,
         label: months[i].slice(0, 3),
         frontColor: "white",
       };
       total += rev;
+
       const month = rev / 1000;
       revenue.push(data);
       revenueData.push(month);
@@ -164,8 +168,10 @@ const Stats = () => {
           justifyContent: "space-around",
         }}
       >
-        <StatsCard title="Revenue" value={handleRevenue().total} />
-        <StatsCard title="Expense" value={handleExpense().total} />
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <StatsCard title="Revenue" value={handleRevenue().total} />
+          <StatsCard title="Expense" value={handleExpense().total} />
+        </ScrollView>
       </View>
 
       <View>

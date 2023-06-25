@@ -10,7 +10,7 @@ import React, { useContext, useRef, useState } from "react";
 import Swipeable from "react-native-gesture-handler/Swipeable";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import UserContext from "../contexts/UserContext"; // UserContext düzgün şekilde import edildi
+import UserContext from "../contexts/UserContext";
 import { monthGenerator } from "../utils/monthGenerator";
 import { AntDesign } from "@expo/vector-icons";
 import { EDIT, PRIMARY_COLOR, RED } from "../styles";

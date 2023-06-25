@@ -12,8 +12,6 @@ import {
   View,
   Animated,
   Text,
-  Button,
-  I18nManager,
   ScrollView,
 } from "react-native";
 import FloatButton from "../components/FloatButton";
@@ -107,20 +105,49 @@ export default function Home() {
           />
           <View
             style={{
-              borderWidth: 5,
-              borderColor: "gray",
-              height: 130,
-              width: 130,
-              justifyContent: "center",
-              alignItems: "center",
-              borderRadius: 130,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              width: "100%",
             }}
           >
-            <Text style={{ alignSelf: "center" }}>Balance</Text>
-            <Text style={styles.priceText}>
-              {currency}
-              {handleProcess().balance.toFixed(2)}
-            </Text>
+            <View
+              style={{
+                borderWidth: 5,
+                borderColor: handleProcess().balance >= 0 ? "#F2BE22" : "red",
+                height: 130,
+                width: 130,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 130,
+              }}
+            >
+              <Text style={{ alignSelf: "center" }}>Balance</Text>
+              <Text numberOfLines={1} style={styles.priceText}>
+                {currency}
+                {handleProcess().balance.toFixed(
+                  handleProcess().balance.toString().length > 3 ? 0 : 2
+                )}
+              </Text>
+            </View>
+            <View
+              style={{
+                borderWidth: 5,
+                borderColor: "gray",
+                height: 130,
+                width: 130,
+                justifyContent: "center",
+                alignItems: "center",
+                borderRadius: 130,
+              }}
+            >
+              <Text style={{ alignSelf: "center" }}>Your Goals</Text>
+              <Text numberOfLines={1} style={styles.priceText}>
+                {currency}
+                {handleProcess().balance.toFixed(
+                  handleProcess().balance.toString().length > 3 ? 0 : 2
+                )}
+              </Text>
+            </View>
           </View>
           <View style={styles.recentView}>
             <Text style={styles.recentText}>RECENT TRANSACTIONS</Text>
@@ -185,7 +212,7 @@ const styles = StyleSheet.create({
     marginStart: 20,
   },
   priceText: {
-    fontSize: 23,
+    fontSize: 20,
     fontWeight: "bold",
     color: "#4a4a4a",
     marginVertical: 10,

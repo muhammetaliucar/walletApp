@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import { Feather } from "@expo/vector-icons";
 import { RED, REVENUE } from "../styles";
 import UserContext from "../contexts/UserContext";
+import { LinearGradient } from "expo-linear-gradient";
 
 interface Props {
   value: number;
@@ -12,7 +13,10 @@ interface Props {
 const StatsCard = ({ value, title }: Props) => {
   const { currency } = useContext(UserContext);
   return (
-    <View
+    <LinearGradient
+      start={{ x: 0.0, y: 1.0 }}
+      end={{ x: 1.0, y: 1.0 }}
+      colors={["rgba(0,0,0,0.8)", "transparent"]}
       style={{
         ...styles.container,
         backgroundColor: title === "Expense" ? RED : REVENUE,
@@ -28,9 +32,18 @@ const StatsCard = ({ value, title }: Props) => {
       </View>
 
       <Text style={styles.value}>
-        {currency} {value}
+        {currency} {value.toFixed(2)}
       </Text>
-    </View>
+      <Text
+        style={{
+          color: "white",
+          fontSize: 14,
+          marginLeft: 10,
+        }}
+      >
+        13 process
+      </Text>
+    </LinearGradient>
   );
 };
 
@@ -39,21 +52,24 @@ export default StatsCard;
 const styles = StyleSheet.create({
   value: {
     color: "white",
-    fontSize: 20,
+    fontSize: 30,
     fontWeight: "bold",
     marginLeft: 10,
     marginTop: 10,
   },
   container: {
-    borderRadius: 6,
+    borderRadius: 10,
     marginVertical: 30,
     paddingHorizontal: 10,
-    width: "45%",
+    width: 250,
+    height: 150,
+    marginHorizontal: 10,
     paddingVertical: 10,
+    justifyContent: "space-around",
   },
   title: {
     color: "white",
     fontSize: 14,
-    fontWeight: "bold",
+    fontWeight: "500",
   },
 });

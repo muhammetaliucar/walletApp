@@ -1,4 +1,4 @@
-import { Alert, Dimensions, ScrollView, Text } from "react-native";
+import { Alert, ScrollView, Text } from "react-native";
 import React, { useContext, useEffect, useRef } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -11,6 +11,7 @@ import { currencyData } from "../data/currencyData";
 import SettingsCard from "../components/SettingsCard";
 import SetCurrency from "../components/SetCurrency";
 import { SCREEN_HEIGHT, version } from "../constants";
+import { PRIMARY_COLOR } from "../styles";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -43,7 +44,11 @@ const Settings = () => {
   };
 
   const openBrowser = async (link: string) => {
-    let result = await WebBrowser.openBrowserAsync(link);
+    try {
+      await WebBrowser.openBrowserAsync(link);
+    } catch (error) {
+      Alert.alert("Error", "An error occurred while opening the browser.");
+    }
   };
 
   return (
@@ -56,27 +61,49 @@ const Settings = () => {
             )
           }
           text="Privacy Policy"
-          icon={<MaterialIcons name="privacy-tip" size={24} color="black" />}
+          icon={
+            <MaterialIcons name="privacy-tip" size={24} color={PRIMARY_COLOR} />
+          }
         />
         <SettingsCard
           onPress={() => navigation.navigate("AboutUs")}
           text="About Us"
-          icon={<MaterialIcons name="info-outline" size={24} color="black" />}
+          icon={
+            <MaterialIcons
+              name="info-outline"
+              size={24}
+              color={PRIMARY_COLOR}
+            />
+          }
         />
         <SettingsCard
           onPress={() => openBrowser("https://www.muhammetaliucar.com")}
           text="Creator Info"
-          icon={<MaterialIcons name="developer-mode" size={24} color="black" />}
+          icon={
+            <MaterialIcons
+              name="developer-mode"
+              size={24}
+              color={PRIMARY_COLOR}
+            />
+          }
         />
         <SettingsCard
           onPress={handleCurrency}
-          icon={<Fontisto name="money-symbol" size={24} color="black" />}
+          icon={
+            <Fontisto name="money-symbol" size={24} color={PRIMARY_COLOR} />
+          }
           text="Currency"
         />
         <SettingsCard
           onPress={showAlert}
           text="Delete All Data"
-          icon={<MaterialIcons name="delete-outline" size={24} color="black" />}
+          icon={
+            <MaterialIcons
+              name="delete-outline"
+              size={24}
+              color={PRIMARY_COLOR}
+            />
+          }
         />
         <Text
           style={{
