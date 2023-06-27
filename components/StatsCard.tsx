@@ -41,6 +41,7 @@ const StatsCard = ({ value, title }: Props) => {
           marginLeft: 10,
         }}
       >
+        {/* FIXME lang.   */}
         13 process
       </Text>
     </LinearGradient>

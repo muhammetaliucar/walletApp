@@ -12,6 +12,7 @@ import SettingsCard from "../components/SettingsCard";
 import SetCurrency from "../components/SetCurrency";
 import { SCREEN_HEIGHT, version } from "../constants";
 import { PRIMARY_COLOR } from "../styles";
+import I18n from "../languages/i18n";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -60,14 +61,14 @@ const Settings = () => {
               "https://www.freeprivacypolicy.com/live/ee8badfc-3fa6-4b47-b582-a752d94e4104"
             )
           }
-          text="Privacy Policy"
+          text={I18n.t("settings.titles.privacyPolicy")}
           icon={
             <MaterialIcons name="privacy-tip" size={24} color={PRIMARY_COLOR} />
           }
         />
         <SettingsCard
           onPress={() => navigation.navigate("AboutUs")}
-          text="About Us"
+          text={I18n.t("settings.titles.aboutUs")}
           icon={
             <MaterialIcons
               name="info-outline"
@@ -78,7 +79,7 @@ const Settings = () => {
         />
         <SettingsCard
           onPress={() => openBrowser("https://www.muhammetaliucar.com")}
-          text="Creator Info"
+          text={I18n.t("settings.titles.createrInfo")}
           icon={
             <MaterialIcons
               name="developer-mode"
@@ -92,11 +93,11 @@ const Settings = () => {
           icon={
             <Fontisto name="money-symbol" size={24} color={PRIMARY_COLOR} />
           }
-          text="Currency"
+          text={I18n.t("settings.titles.currency")}
         />
         <SettingsCard
           onPress={showAlert}
-          text="Delete All Data"
+          text={I18n.t("settings.titles.deleteAllData")}
           icon={
             <MaterialIcons
               name="delete-outline"

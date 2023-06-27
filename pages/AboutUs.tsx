@@ -1,21 +1,14 @@
 import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { version } from "../constants";
+import I18n from "../languages/i18n";
 
 const AboutUs = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Image source={require("../assets/logo.png")} style={styles.logo} />
       <View style={styles.separator}>
-        <Text style={styles.description}>
-          Rimsin is a mobile application that helps you take control of your
-          personal finances. It enables you to set financial goals, track your
-          income and expenses, create budgets, and manage your spending. With
-          Rimsin's user-friendly interface and analytical tools, you can gain a
-          better understanding of your financial situation and take steps
-          towards saving and securing your financial well-being. Discover Rimsin
-          to achieve financial freedom!
-        </Text>
+        <Text style={styles.description}>{I18n.t("aboutUs")}</Text>
       </View>
       <Text style={styles.developedByText}>
         This app is developed by <Text style={styles.boldText}>Ali Uçar</Text>
