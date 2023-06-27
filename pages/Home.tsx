@@ -20,6 +20,7 @@ import Card from "../components/Card";
 import UserContext from "../contexts/UserContext";
 import { AntDesign } from "@expo/vector-icons";
 import { CalendarData } from "types";
+import I18n from "../languages/i18n";
 
 export default function Home() {
   const { data, currency } = useContext(UserContext);
@@ -121,7 +122,7 @@ export default function Home() {
                 borderRadius: 130,
               }}
             >
-              <Text style={{ alignSelf: "center" }}>Balance</Text>
+              <Text style={{ alignSelf: "center" }}>{I18n.t("balance")}</Text>
               <Text numberOfLines={1} style={styles.priceText}>
                 {currency}
                 {handleProcess().balance.toFixed(
@@ -140,7 +141,7 @@ export default function Home() {
                 borderRadius: 130,
               }}
             >
-              <Text style={{ alignSelf: "center" }}>Your Goals</Text>
+              <Text style={{ alignSelf: "center" }}>{I18n.t("yourGoals")}</Text>
               <Text numberOfLines={1} style={styles.priceText}>
                 {currency}
                 {handleProcess().balance.toFixed(
@@ -150,7 +151,9 @@ export default function Home() {
             </View>
           </View>
           <View style={styles.recentView}>
-            <Text style={styles.recentText}>RECENT TRANSACTIONS</Text>
+            <Text style={styles.recentText}>
+              {I18n.t("recentTransactions")}
+            </Text>
             <AntDesign name="arrowright" size={16} color="black" />
           </View>
           {filteredData().length === 0 ? (
@@ -161,7 +164,7 @@ export default function Home() {
                   color: "#4a4a4a",
                 }}
               >
-                No transactions found
+                {I18n.t("noTransactions")}
               </Text>
             </View>
           ) : (

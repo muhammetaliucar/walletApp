@@ -55,7 +55,6 @@ const CalendarComponent = ({
           date: day.dateString,
         });
       }}
-      // how to font size of month and day names
       theme={{
         textDayFontSize: 14,
         textMonthFontSize: 14,

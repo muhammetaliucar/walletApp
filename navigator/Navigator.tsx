@@ -21,6 +21,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { View } from "react-native";
 import { Image } from "react-native";
 import AboutUs from "../pages/AboutUs";
+import I18n from "../languages/i18n";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -77,7 +78,7 @@ export default function Navigator() {
         }}
       >
         <Tab.Screen
-          name="Home"
+          name={I18n.t("bottomBar.home")}
           options={{
             tabBarIcon: ({ color }) => (
               <MaterialCommunityIcons name="home" color={color} size={26} />
@@ -86,7 +87,7 @@ export default function Navigator() {
           component={Home}
         />
         <Tab.Screen
-          name="Stats"
+          name={I18n.t("bottomBar.stats")}
           options={{
             tabBarIcon: ({ color }) => (
               <Ionicons name="stats-chart" size={26} color={color} />
@@ -95,7 +96,7 @@ export default function Navigator() {
           component={Stats}
         />
         <Tab.Screen
-          name="Settings"
+          name={I18n.t("bottomBar.settings")}
           options={{
             tabBarIcon: ({ color }) => (
               <Feather name="settings" size={26} color={color} />
@@ -154,6 +155,8 @@ export default function Navigator() {
             headerBackTitleVisible: false,
             headerTitle: "New Process",
             headerTintColor: "white",
+            gestureEnabled: true,
+            gestureDirection: "vertical",
             cardStyleInterpolator:
               CardStyleInterpolators.forModalPresentationIOS,
             headerStyle: {

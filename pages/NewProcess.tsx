@@ -16,6 +16,7 @@ import UserContext from "../contexts/UserContext";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { PRIMARY_COLOR, RED } from "../styles";
 import { monthGenerator } from "../utils/monthGenerator";
+import I18n from "../languages/i18n";
 
 const NewProcess = () => {
   const route = useRoute();
@@ -75,7 +76,7 @@ const NewProcess = () => {
 
     headerRight: () => (
       <TouchableOpacity onPress={() => handleSave()}>
-        <Text style={styles.headerRightText}>Save</Text>
+        <Text style={styles.headerRightText}>{I18n.t("save")}</Text>
       </TouchableOpacity>
     ),
   });
@@ -108,7 +109,7 @@ const NewProcess = () => {
                 },
               ]}
             >
-              Expense
+              {I18n.t("expense")}
             </Text>
           </TouchableOpacity>
 
@@ -131,7 +132,7 @@ const NewProcess = () => {
                 },
               ]}
             >
-              Revenue
+              {I18n.t("revenue")}
             </Text>
           </TouchableOpacity>
         </View>
@@ -146,7 +147,7 @@ const NewProcess = () => {
             style={styles.input}
             value={total.toString()}
             inputMode="numeric"
-            placeholder="Amount"
+            placeholder={I18n.t("amount")}
           />
           <Text style={styles.currency}>{currency}</Text>
         </Pressable>
@@ -160,7 +161,7 @@ const NewProcess = () => {
             onChangeText={(text) => setDescription(text)}
             ref={textRef}
             multiline
-            placeholder="Description"
+            placeholder={I18n.t("description")}
           />
         </Pressable>
       </KeyboardAvoidingView>

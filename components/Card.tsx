@@ -16,6 +16,7 @@ import { AntDesign } from "@expo/vector-icons";
 import { EDIT, PRIMARY_COLOR, RED } from "../styles";
 import ReactNativeModal from "react-native-modal";
 import { useNavigation } from "@react-navigation/native";
+import I18n from "../languages/i18n";
 
 interface Props {
   item: any;
@@ -49,7 +50,7 @@ const Card = ({ item }: Props) => {
           <Animated.Text
             style={{ transform: [{ scale: scale }], color: "white" }}
           >
-            Delete
+            {I18n.t("delete")}
           </Animated.Text>
         </View>
       </TouchableOpacity>
@@ -73,7 +74,7 @@ const Card = ({ item }: Props) => {
           <Animated.Text
             style={{ transform: [{ scale: scale }], color: "white" }}
           >
-            Edit
+            {I18n.t("edit")}
           </Animated.Text>
         </View>
       </TouchableOpacity>
@@ -116,7 +117,7 @@ const Card = ({ item }: Props) => {
                   },
                 ]}
               >
-                {item.description ? item.description : "No Description"}
+                {item.description ? item.description : I18n.t("noDescription")}
               </Text>
             </View>
           </View>
@@ -164,7 +165,7 @@ const Card = ({ item }: Props) => {
             <View style={styles.modalSection}>
               <Text style={styles.modalLabel}>Note:</Text>
               <Text style={styles.modalDescription}>
-                {item.description ? item.description : "No Description"}
+                {item.description ? item.description : I18n.t("noDescription")}
               </Text>
             </View>
             <View style={styles.modalSection}>
@@ -177,7 +178,8 @@ const Card = ({ item }: Props) => {
                   },
                 ]}
               >
-                {item.total}₺
+                {item.total}
+                {currency}
               </Text>
             </View>
           </View>
