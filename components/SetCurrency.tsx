@@ -2,6 +2,7 @@ import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { FlatList } from "react-native-gesture-handler";
 import CurrencyCard from "./CurrencyCard";
+import I18n from "../languages/i18n";
 
 interface Props {
   currencyData: any;
@@ -19,15 +20,14 @@ const SetCurrency = ({ currencyData, currencyBottomSheetRef }: Props) => {
     >
       <Text
         style={{
-          fontSize: 20,
+          fontSize: 18,
           fontWeight: "500",
           marginLeft: 10,
-          textAlign: "center",
           color: "black",
           marginBottom: 30,
         }}
       >
-        Your current curreny:
+        {I18n.t("currency")}
       </Text>
       <FlatList
         data={currencyData}

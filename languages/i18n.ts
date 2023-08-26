@@ -51,6 +51,10 @@ I18n.translations = {
         deleteAllData: "Delete All Data",
       },
     },
+    review: "Rate Us",
+    currency: "Currency",
+    deleteDataText: "Are you sure it will delete all data?",
+    warning: "WARNING",
   },
   tr: {
     bottomBar: {
@@ -95,6 +99,10 @@ I18n.translations = {
         deleteAllData: "Tüm Verileri Sil",
       },
     },
+    review: "Bizi Oyla",
+    currency: "Para Birimi",
+    deleteDataText: "Tüm verileri silmek istediğinizden emin misiniz?",
+    warning: "UYARI",
   },
   de: {
     bottomBar: {
@@ -139,6 +147,10 @@ I18n.translations = {
         deleteAllData: "Alle Daten löschen",
       },
     },
+    review: "Bewerten Sie uns",
+    currency: "Währung",
+    deleteDataText: "Sind Sie sicher, dass Sie alle Daten löschen möchten?",
+    warning: "WARNUNG",
   },
 };
 

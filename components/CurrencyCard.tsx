@@ -40,8 +40,6 @@ const styles = StyleSheet.create({
   view: {
     flexDirection: "row",
     justifyContent: "space-between",
-    borderBottomWidth: 1,
     paddingVertical: 10,
-    borderColor: "lightgray",
   },
 });

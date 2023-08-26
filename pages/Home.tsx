@@ -13,6 +13,7 @@ import {
   Animated,
   Text,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import FloatButton from "../components/FloatButton";
 import CalendarComponent from "../components/CalendarComponent";
@@ -21,8 +22,10 @@ import UserContext from "../contexts/UserContext";
 import { AntDesign } from "@expo/vector-icons";
 import { CalendarData } from "types";
 import I18n from "../languages/i18n";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Home() {
+  const navigation = useNavigation();
   const { data, currency } = useContext(UserContext);
   const animatedValue = useRef(new Animated.Value(0)).current;
   const [monthVisible, setMonthVisible] = useState(
@@ -70,7 +73,6 @@ export default function Home() {
   }, [data, monthVisible]);
 
   useEffect(() => {
-    console.log("animated");
     const animation = Animated.timing(animatedValue, {
       toValue: 1,
       duration: 1000,
@@ -130,7 +132,7 @@ export default function Home() {
                 )}
               </Text>
             </View>
-            <View
+            {/* <View
               style={{
                 borderWidth: 5,
                 borderColor: "gray",
@@ -148,14 +150,21 @@ export default function Home() {
                   handleProcess().balance.toString().length > 3 ? 0 : 2
                 )}
               </Text>
-            </View>
+            </View> */}
           </View>
-          <View style={styles.recentView}>
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate("Transactions", {
+                month: monthVisible,
+              });
+            }}
+            style={styles.recentView}
+          >
             <Text style={styles.recentText}>
               {I18n.t("recentTransactions")}
             </Text>
             <AntDesign name="arrowright" size={16} color="black" />
-          </View>
+          </TouchableOpacity>
           {filteredData().length === 0 ? (
             <View style={styles.noContentView}>
               <Text

@@ -8,9 +8,10 @@ import { LinearGradient } from "expo-linear-gradient";
 interface Props {
   value: number;
   title: string;
+  processNumber?: number;
 }
 
-const StatsCard = ({ value, title }: Props) => {
+const StatsCard = ({ value, title, processNumber }: Props) => {
   const { currency } = useContext(UserContext);
   return (
     <LinearGradient
@@ -42,7 +43,7 @@ const StatsCard = ({ value, title }: Props) => {
         }}
       >
         {/* FIXME lang.   */}
-        13 process
+        {processNumber} process
       </Text>
     </LinearGradient>
   );

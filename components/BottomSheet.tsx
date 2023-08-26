@@ -1,5 +1,5 @@
-import { Dimensions, StyleSheet, Text, View } from "react-native";
-import React, { useCallback, useImperativeHandle } from "react";
+import { Dimensions, StyleSheet, Text, View, Pressable } from "react-native";
+import React, { useCallback, useImperativeHandle, useState } from "react";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   Extrapolate,
@@ -9,6 +9,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { WHITE, BOTTOM_SHEET_LINE } from "../styles";
+import { Portal } from "@gorhom/portal";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -24,13 +25,22 @@ export type BottomSheetRefProps = {
 };
 
 const BottomSheet = React.forwardRef<BottomSheetRefProps, BottomSheetProps>(
-  ({ children }, ref) => {
+  ({ children, top = 100 }, ref) => {
     const translateY = useSharedValue(0);
     const active = useSharedValue(false);
+    const [showPortal, setShowPortal] = useState<boolean>(false);
 
-    const scrollTo = useCallback((destination: number) => {
+    const scrollTo = useCallback((destination) => {
       "worklet";
       active.value = destination !== 0;
+
+      if (destination === 0) {
+        setTimeout(() => {
+          setShowPortal(false);
+        }, 300); //for animation
+      } else {
+        setShowPortal(true);
+      }
 
       translateY.value = withSpring(destination, { damping: 50 });
     }, []);
@@ -46,6 +56,7 @@ const BottomSheet = React.forwardRef<BottomSheetRefProps, BottomSheetProps>(
 
     const context = useSharedValue({ y: 0 });
     const gesture = Gesture.Pan()
+      .runOnJS(true)
       .onStart(() => {
         context.value = { y: translateY.value };
       })
@@ -78,12 +89,46 @@ const BottomSheet = React.forwardRef<BottomSheetRefProps, BottomSheetProps>(
     });
 
     return (
-      <GestureDetector gesture={gesture}>
-        <Animated.View style={[styles.bottomSheetContainer, rBottomSheetStyle]}>
-          <View style={styles.line} />
-          {children}
-        </Animated.View>
-      </GestureDetector>
+      <>
+        {showPortal && (
+          // to make the background black
+          <Portal>
+            <Pressable
+              onPress={() => scrollTo(0)}
+              style={{
+                width: "100%",
+                height: "100%",
+                position: "absolute",
+                top: 0,
+                zIndex: 1,
+                left: 0,
+                backgroundColor: "black",
+                opacity: 0.6,
+              }}
+            />
+            <View
+              style={{
+                width: "100%",
+                height: "100%",
+                position: "absolute",
+                top,
+                zIndex: 2,
+                left: 0,
+                bottom: 150,
+              }}
+            >
+              <GestureDetector gesture={gesture}>
+                <Animated.View
+                  style={[styles.bottomSheetContainer, rBottomSheetStyle]}
+                >
+                  <View style={styles.line} />
+                  {children}
+                </Animated.View>
+              </GestureDetector>
+            </View>
+          </Portal>
+        )}
+      </>
     );
   }
 );

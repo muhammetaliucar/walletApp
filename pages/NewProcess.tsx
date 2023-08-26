@@ -142,7 +142,13 @@ const NewProcess = () => {
           style={styles.inputContainer}
         >
           <TextInput
-            onChangeText={(text) => setTotal(Number(text))}
+            onChangeText={(text) => {
+              if (text === "" || Number(text) < 0) {
+                setTotal(0);
+                return;
+              }
+              setTotal(parseFloat(text));
+            }}
             ref={priceRef}
             style={styles.input}
             value={total.toString()}

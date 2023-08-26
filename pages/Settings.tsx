@@ -13,6 +13,7 @@ import SetCurrency from "../components/SetCurrency";
 import { SCREEN_HEIGHT, version } from "../constants";
 import { PRIMARY_COLOR } from "../styles";
 import I18n from "../languages/i18n";
+import * as StoreReview from "expo-store-review";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -34,7 +35,7 @@ const Settings = () => {
   };
 
   const showAlert = () => {
-    Alert.alert("WARNING", "Are you sure it will delete all data?", [
+    Alert.alert(I18n.t("warning"), I18n.t("deleteDataText"), [
       {
         text: "Cancel",
         onPress: () => console.log("Cancel Pressed"),
@@ -96,6 +97,17 @@ const Settings = () => {
           text={I18n.t("settings.titles.currency")}
         />
         <SettingsCard
+          onPress={async () => {
+            if (await StoreReview.hasAction()) {
+              StoreReview.requestReview();
+            }
+          }}
+          text={I18n.t("review")}
+          icon={
+            <MaterialIcons name="star-rate" size={24} color={PRIMARY_COLOR} />
+          }
+        />
+        <SettingsCard
           onPress={showAlert}
           text={I18n.t("settings.titles.deleteAllData")}
           icon={
@@ -106,6 +118,7 @@ const Settings = () => {
             />
           }
         />
+
         <Text
           style={{
             textAlign: "center",

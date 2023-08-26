@@ -1,7 +1,7 @@
 export const currencyData = [
   {
     id: 1,
-    currency: "₺ - Turkey Lira",
+    currency: "₺ - Turkish Lira",
     value: "₺",
   },
   {

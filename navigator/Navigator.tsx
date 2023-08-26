@@ -22,6 +22,7 @@ import { View } from "react-native";
 import { Image } from "react-native";
 import AboutUs from "../pages/AboutUs";
 import I18n from "../languages/i18n";
+import Transactions from "../pages/Transactions";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -178,6 +179,33 @@ export default function Navigator() {
           }}
           name="AboutUs"
           component={AboutUs}
+        />
+        <Stack.Screen
+          options={{
+            headerLeft(props) {
+              return (
+                <AntDesign
+                  {...props}
+                  style={{ marginLeft: 10 }}
+                  name="close"
+                  size={24}
+                  color="white"
+                />
+              );
+            },
+            headerBackTitleVisible: false,
+            headerTitle: "New Process",
+            headerTintColor: "white",
+            gestureEnabled: true,
+            gestureDirection: "vertical",
+            cardStyleInterpolator:
+              CardStyleInterpolators.forModalPresentationIOS,
+            headerStyle: {
+              backgroundColor: PRIMARY_COLOR,
+            },
+          }}
+          name="Transactions"
+          component={Transactions}
         />
       </Stack.Navigator>
     </NavigationContainer>

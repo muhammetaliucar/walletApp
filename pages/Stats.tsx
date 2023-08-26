@@ -66,6 +66,7 @@ const Stats = () => {
     let expense = [];
     let expenseData = [];
     let total = 0;
+    let processNumber = 0;
 
     for (let i = 0; i < monthsNumber + 1; i++) {
       const exp = userData
@@ -84,8 +85,15 @@ const Stats = () => {
       const month = exp / 1000;
       expense.push(data);
       expenseData.push(month);
+      console.log(
+        userData.filter(
+          (item) =>
+            item.date.split("-")[1] === (i + 1).toString().padStart(2, "0")
+        )
+      );
+      processNumber = userData.filter((item) => item.type === "Expense").length;
     }
-    return { expense, expenseData, total };
+    return { expense, expenseData, total, processNumber };
   };
 
   const handleRevenue = () => {
@@ -103,6 +111,8 @@ const Stats = () => {
         )
         .reduce((acc, item) => acc + item.total, 0);
 
+      processNumber = userData.filter((item) => item.type === "Revenue").length;
+
       const data = {
         value: rev / 1000,
         label: months[i].slice(0, 3),
@@ -115,7 +125,7 @@ const Stats = () => {
       revenueData.push(month);
     }
 
-    return { revenue, revenueData, total };
+    return { revenue, revenueData, total, processNumber };
   };
 
   useEffect(() => {
@@ -169,8 +179,16 @@ const Stats = () => {
         }}
       >
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <StatsCard title="Revenue" value={handleRevenue().total} />
-          <StatsCard title="Expense" value={handleExpense().total} />
+          <StatsCard
+            title="Revenue"
+            value={handleRevenue().total}
+            processNumber={handleRevenue().processNumber}
+          />
+          <StatsCard
+            title="Expense"
+            value={handleExpense().total}
+            processNumber={handleExpense().processNumber}
+          />
         </ScrollView>
       </View>
 
